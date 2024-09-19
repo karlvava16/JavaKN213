@@ -5,8 +5,8 @@ public class Bike  extends Vehicle {
 
 
     public Bike(String name, String type) {
-        setName(name);
-        setType(type);
+        super(name);
+        this.setType(type);
 
     }
 

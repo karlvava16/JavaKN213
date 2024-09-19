@@ -3,6 +3,13 @@ package itstep.learning.oop;
 public class Vehicle {
     String name;
 
+    public Vehicle() {
+
+    }
+
+    public Vehicle(String name) {
+        setName(name);
+    }
     public String getName() {
         return name;
     }
