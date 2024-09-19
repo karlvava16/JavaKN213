@@ -7,6 +7,13 @@ public class Bus  extends Vehicle {
         this.capacity = capacity;
     }
 
+    public Bus (String name, int capacity)
+    {
+        super(name);
+        this.setCapacity(capacity);
+    }
+
+
     public int getCapacity() {
         return capacity;
     }
