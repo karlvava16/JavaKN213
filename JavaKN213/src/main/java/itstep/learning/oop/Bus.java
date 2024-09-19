@@ -20,6 +20,6 @@ public class Bus  extends Vehicle {
 
     @Override
     public String getInfo() {
-        return String.format("Bus %s has %d capacity", this.getClass().getSimpleName(), capacity);
+        return String.format("Bus %s has %d capacity", this.getName(), capacity);
     }
 }
