@@ -1,5 +1,6 @@
 package itstep.learning.oop;
 
+//done
 public class Bike  extends Vehicle {
     private String type;
 
