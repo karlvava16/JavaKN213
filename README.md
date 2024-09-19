@@ -1,1 +1,1 @@
-![alt text](ScreenShots\8.gif)
+![alt text](ScreenShots/8.gif)
