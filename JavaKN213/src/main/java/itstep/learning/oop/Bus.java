@@ -11,4 +11,8 @@ public class Bus  extends Vehicle {
         return capacity;
     }
 
+    @Override
+    public String getInfo() {
+        return String.format("Bus %s has %d capacity", this.getClass().getSimpleName(), capacity);
+    }
 }

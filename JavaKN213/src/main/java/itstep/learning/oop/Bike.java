@@ -1,5 +1,7 @@
 package itstep.learning.oop;
 
+import java.util.Locale;
+
 //done
 public class Bike  extends Vehicle {
     private String type;
@@ -17,6 +19,12 @@ public class Bike  extends Vehicle {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String getInfo()
+    {
+        return String.format(Locale.ROOT,  "Bike %s, type: %s", this.getName(), this.getType());
     }
 
 

@@ -1,6 +1,6 @@
 package itstep.learning.oop;
 
-public class Vehicle {
+public abstract class Vehicle {
     String name;
 
     public Vehicle() {
@@ -17,4 +17,6 @@ public class Vehicle {
     public void setName(String name) {
         this.name = name;
     }
+
+    public abstract String getInfo();
 }
