@@ -1,6 +1,6 @@
 package itstep.learning.oop;
 
-public abstract class Vehicle {
+public abstract class Vehicle{
     String name;
 
     public Vehicle() {
