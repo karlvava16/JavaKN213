@@ -1,5 +1,7 @@
 package itstep.learning.oop;
 
+import itstep.learning.oop.annotations.Required;
+
 import java.util.Locale;
 
 public class Car extends Vehicle {
@@ -11,10 +13,11 @@ public class Car extends Vehicle {
         this.carBody = carBody;
     }
 
+    @Required
     private String carBody;
 
     public Car(String name, String carBody) {
-        super.setName(name);
+        super(name);
         setCarBody(carBody);
     }
 

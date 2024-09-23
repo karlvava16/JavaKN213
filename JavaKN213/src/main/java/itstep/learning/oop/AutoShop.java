@@ -34,15 +34,17 @@ public class AutoShop {
     }
 
     public void run() {
-        printAll();
-        System.out.println("----------- LARGE SIZED ---------------");
-        printLargeSized();
-        System.out.println("----------- NON - LARGE SIZED ---------------");
-        printNonLargeSized();
-        System.out.println("----------- TRAILER-ABLE ---------------");
-        printTrailers();
-        System.out.println("----------- BIKE-REQUIRED ---------------");
-        printRequired();
+//        printAll();
+//        System.out.println("----------- LARGE SIZED ---------------");
+//        printLargeSized();
+//        System.out.println("----------- NON - LARGE SIZED ---------------");
+//        printNonLargeSized();
+//        System.out.println("----------- TRAILER-ABLE ---------------");
+//        printTrailers();
+//        System.out.println("----------- BIKE-REQUIRED ---------------");
+//        printRequired();
+
+        showAllClasses();
     }
 
     // вивести всі поля Bike, помічені анотацією @Required
@@ -55,6 +57,12 @@ public class AutoShop {
                 System.out.println(field.getName());
             }
         }
+    }
+
+    // показує всі файли-класи, що є у даному пакеті
+    private void showAllClasses()
+    {
+        System.out.println( this.getClass().getClassLoader().getResource("."));
     }
 
 

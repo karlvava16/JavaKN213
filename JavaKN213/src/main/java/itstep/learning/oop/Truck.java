@@ -1,15 +1,18 @@
 package itstep.learning.oop;
 
+import itstep.learning.oop.annotations.Required;
+
 import java.util.Locale;
 
 public class Truck extends Vehicle implements LargeSized, Trailer {
 
+    @Required
     private double cargo;
 
 
     public Truck(String name, double cargo) {
+        super(name);
         setCargo(cargo);
-        super.setName(name);
     }
 
     public void setCargo(double cargo) {

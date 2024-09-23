@@ -1,5 +1,7 @@
 package itstep.learning.oop;
 
+import itstep.learning.oop.annotations.Required;
+
 import java.util.Locale;
 
 public class Crossover extends Vehicle {
@@ -11,10 +13,11 @@ public class Crossover extends Vehicle {
         this.clearance = clearance;
     }
 
+    @Required
     private double clearance;
 
     public Crossover(String name, float clearance) {
-        super.setName(name);
+        super(name);
         setClearance(clearance);
     }
 

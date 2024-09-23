@@ -1,6 +1,10 @@
 package itstep.learning.oop;
 
+import itstep.learning.oop.annotations.Required;
+
 public class Bus  extends Vehicle {
+
+    @Required
     private int capacity;
 
     public void setCapacity(int capacity) {
