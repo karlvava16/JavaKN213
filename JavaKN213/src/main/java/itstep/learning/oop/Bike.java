@@ -1,9 +1,12 @@
 package itstep.learning.oop;
 
+import itstep.learning.oop.annotations.Required;
 import java.util.Locale;
 
 //done
 public class Bike  extends Vehicle {
+
+    @Required
     private String type;
 
 

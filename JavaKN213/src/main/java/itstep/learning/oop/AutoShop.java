@@ -1,5 +1,8 @@
 package itstep.learning.oop;
 
+import itstep.learning.oop.annotations.Required;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +41,22 @@ public class AutoShop {
         printNonLargeSized();
         System.out.println("----------- TRAILER-ABLE ---------------");
         printTrailers();
+        System.out.println("----------- BIKE-REQUIRED ---------------");
+        printRequired();
     }
+
+    // вивести всі поля Bike, помічені анотацією @Required
+    private void printRequired()
+    {
+        for(Field field : Bike.class.getDeclaredFields())
+        {
+            if(field.isAnnotationPresent(Required.class))
+            {
+                System.out.println(field.getName());
+            }
+        }
+    }
+
 
     public void printAll() {
         for( Vehicle vehicle : vehicles ) {
