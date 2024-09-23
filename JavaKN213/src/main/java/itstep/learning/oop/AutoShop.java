@@ -76,25 +76,20 @@ public class AutoShop {
             throw new RuntimeException("Class not found!");
         }
         File classRoot = null;
-        File[] files;
         try {
             classRoot = new File(URLDecoder.decode(classLocation.getPath(), "UTF-8"),
                     packageName.replace(".", "/"));
         } catch (Exception ignored) {
         }
-        if (classRoot == null || (files = classRoot.listFiles()) == null) {
+        if (classRoot == null) {
             throw new RuntimeException("Error resource traversing");
         }
-        List<String> classNames = new ArrayList<>();
 
-        for (File file : files) {
-            String fileName = file.getName();
-            if (fileName.endsWith(".class") && file.isFile() && file.canRead()) {
-                String className = fileName.substring(0, fileName.length() - 6);
-                classNames.add(packageName + "." + className);
-            }
-        }
-        // только которые Product
+        List<String> classNames = new ArrayList<>();
+        // Викликаємо рекурсивний метод для збору всіх класів
+        findClasses(classRoot, packageName, classNames);
+
+        // Фільтруємо лише класи, що мають анотацію @Product
         List<Class<?>> classes = new ArrayList<>();
         for (String className : classNames) {
             Class<?> cls;
@@ -107,12 +102,30 @@ public class AutoShop {
                 classes.add(cls);
             }
         }
-        for (Class<?> cls : classes) {
-            System.out.println("Class: " + cls.getName());
-        }
 
         return classes;
     }
+
+    private void findClasses(File directory, String packageName, List<String> classNames) {
+        if (!directory.exists()) {
+            return;
+        }
+        File[] files = directory.listFiles();
+        if (files == null) {
+            return;
+        }
+
+        for (File file : files) {
+            if (file.isDirectory()) {
+                // Якщо це директорія - викликаємо рекурсію
+                findClasses(file, packageName + "." + file.getName(), classNames);
+            } else if (file.getName().endsWith(".class") && file.isFile() && file.canRead()) {
+                String className = file.getName().substring(0, file.getName().length() - 6);
+                classNames.add(packageName + "." + className);
+            }
+        }
+    }
+
 
 
 

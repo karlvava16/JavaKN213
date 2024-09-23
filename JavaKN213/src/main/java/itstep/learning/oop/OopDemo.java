@@ -21,28 +21,28 @@ public class OopDemo {
 
 Продаж авто
 
-Audi Q5          | Crossover | Name
-Lamborghini Urus | Crossover | Сlearance
-Honda CR-V       | Crossover |
-BMW X5           | Crossover |
+Audi Q5                     | Crossover | Name
+Lamborghini Urus            | Crossover | Сlearance
+Honda CR-V                  | Crossover |
+BMW X5                      | Crossover |
 
-Toyota Corolla | Car | Name
-BMW 320        | Car | CarBody
-VW Golf        |     |
-Honda Accord   | Car |
-Audi RS6       | Car |
+Toyota Corolla              | Car | Name
+BMW 320                     | Car | CarBody
+VW Golf                     |     |
+Honda Accord                | Car |
+Audi RS6                    | Car |
 
-Renault C-Truck   | Truck | Name
-Mercedes Actros L | Truck | Cargo
-DAF XF 106 2018   | Truck |
+Renault C-Truck             | Truck | Name
+Mercedes Actros L           | Truck | Cargo
+DAF XF 106 2018             | Truck |
 
-Renault Master          | Bus | Name
-Mercedes-Benz Sprinter  |     | Capacity
-Bogdan A092             |     |
-Volvo 9700              | Bus |
+Renault Master              | Bus | Name
+Mercedes-Benz Sprinter      |     | Capacity
+Bogdan A092                 |     |
+Volvo 9700                  | Bus |
 
-Kawasaki Ninja            | Bike | Name
-Harley-Davidson Sportster | Bike | Type
+Kawasaki Ninja              | Bike | Name
+Harley-Davidson Sportster   | Bike | Type
 
 
 AutoShop <>---> Vehicle (транспортний засіб)
