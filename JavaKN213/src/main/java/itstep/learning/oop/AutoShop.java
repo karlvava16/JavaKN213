@@ -49,13 +49,16 @@ public class AutoShop {
 //        System.out.println("----------- BIKE-REQUIRED ---------------");
 //        printRequired();
 
-        showAllClasses();
+       for (Class<?> cls : getProductClasses("itstep.learning.oop")) {
+           System.out.println("Class: " + cls.getName());
+           printRequired(cls);
+       }
     }
 
     // вивести всі поля Bike, помічені анотацією @Required
-    private void printRequired()
+    private void printRequired(Class<?> cls)
     {
-        for(Field field : Bike.class.getDeclaredFields())
+        for(Field field : cls.getDeclaredFields())
         {
             if(field.isAnnotationPresent(Required.class))
             {
@@ -63,6 +66,53 @@ public class AutoShop {
             }
         }
     }
+
+
+    private List<Class<?>> getProductClasses(String packageName) {
+        URL classLocation = this.getClass().getClassLoader().getResource(".");
+        if (classLocation == null) {
+            throw new RuntimeException("Class not found!");
+        }
+        File classRoot = null;
+        File[] files;
+        try {
+            classRoot = new File(URLDecoder.decode(classLocation.getPath(), "UTF-8"),
+                    packageName.replace(".", "/"));
+        } catch (Exception ignored) {
+        }
+        if (classRoot == null || (files = classRoot.listFiles()) == null) {
+            throw new RuntimeException("Error resource traversing");
+        }
+        List<String> classNames = new ArrayList<>();
+
+        for (File file : files) {
+            String fileName = file.getName();
+            if (fileName.endsWith(".class") && file.isFile() && file.canRead()) {
+                String className = fileName.substring(0, fileName.length() - 6);
+                classNames.add(packageName + "." + className);
+            }
+        }
+        // только которые Product
+        List<Class<?>> classes = new ArrayList<>();
+        for (String className : classNames) {
+            Class<?> cls;
+            try {
+                cls = Class.forName(className);
+            } catch (Exception ignored) {
+                continue;
+            }
+            if (cls.isAnnotationPresent(Product.class)) {
+                classes.add(cls);
+            }
+        }
+        for (Class<?> cls : classes) {
+            System.out.println("Class: " + cls.getName());
+        }
+
+        return classes;
+    }
+
+
 
     // показує всі файли-класи, що є у даному пакеті
     private void showAllClasses() {
