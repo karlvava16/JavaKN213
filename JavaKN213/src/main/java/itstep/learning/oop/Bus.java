@@ -6,7 +6,7 @@ import itstep.learning.oop.annotations.Required;
 @Product
 public class Bus  extends Vehicle {
 
-    @Required
+    @Required("seats")
     private int capacity;
 
     public void setCapacity(int capacity) {

@@ -62,7 +62,8 @@ public class AutoShop {
         {
             if(field.isAnnotationPresent(Required.class))
             {
-                System.out.println(field.getName());
+                String requiredName = field.getAnnotation(Required.class).value();
+                System.out.println("".equals(requiredName) ? field.getName() : requiredName + " or " + field.getName());
             }
         }
     }
