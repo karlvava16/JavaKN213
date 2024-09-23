@@ -1,9 +1,11 @@
 package itstep.learning.oop;
 
+import itstep.learning.oop.annotations.Product;
 import itstep.learning.oop.annotations.Required;
 
 import java.util.Locale;
 
+@Product
 public class Truck extends Vehicle implements LargeSized, Trailer {
 
     @Required

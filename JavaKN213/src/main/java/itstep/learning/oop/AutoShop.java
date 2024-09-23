@@ -1,5 +1,6 @@
 package itstep.learning.oop;
 
+import itstep.learning.oop.annotations.Product;
 import itstep.learning.oop.annotations.Required;
 
 import java.io.File;
@@ -86,12 +87,34 @@ public class AutoShop {
             System.err.println("Error resource traversing!");
             return;
         }
+
+        List<String> classNames = new ArrayList<>();
         for (File file : files) {
             String fileName = file.getName();
             if (fileName.endsWith(".class") && file.isFile() && file.canRead()) {
-                String className = fileName.substring(0, fileName.length() - 6);
-                System.out.println(className);
+                classNames.add(
+                      "itstep.learning.oop." +
+                              fileName.substring(0, fileName.length() - 6)
+              );
             }
+        }
+
+        List<Class<?>> classes = new ArrayList<>();
+        for (String className : classNames) {
+            Class<?> cls;
+            try {
+                cls = Class.forName(className);
+            }
+            catch (ClassNotFoundException ignored) {continue;}
+
+            if(cls.isAnnotationPresent(Product.class))
+            {
+                classes.add(cls);
+            }
+        }
+        for (Class<?> cls : classes)
+        {
+            System.out.println("Class: " + cls.getName());
         }
     }
 

@@ -1,7 +1,9 @@
 package itstep.learning.oop;
 
+import itstep.learning.oop.annotations.Product;
 import itstep.learning.oop.annotations.Required;
 
+@Product
 public class Bus  extends Vehicle {
 
     @Required
