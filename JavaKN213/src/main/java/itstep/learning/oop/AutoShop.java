@@ -2,7 +2,9 @@ package itstep.learning.oop;
 
 import itstep.learning.oop.annotations.Required;
 
+import java.io.File;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +64,18 @@ public class AutoShop {
     // показує всі файли-класи, що є у даному пакеті
     private void showAllClasses()
     {
-        System.out.println( this.getClass().getClassLoader().getResource("."));
+        URL classLocation = this.getClass().getClassLoader().getResource(".");
+        if(classLocation == null)
+        {
+            System.out.println("Error resource locating");
+        }
+
+        File classRoot = new File(classLocation.getPath());
+
+        System.out.println(
+                classRoot.getPath() + " " +
+                        (classRoot.isDirectory() ? "Directory" : "File")
+        );
     }
 
 
