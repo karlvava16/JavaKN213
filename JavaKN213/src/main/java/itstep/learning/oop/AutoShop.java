@@ -62,20 +62,25 @@ public class AutoShop {
     }
 
     // показує всі файли-класи, що є у даному пакеті
-    private void showAllClasses()
-    {
+    private void showAllClasses() {
         URL classLocation = this.getClass().getClassLoader().getResource(".");
-        if(classLocation == null)
-        {
-            System.out.println("Error resource locating");
+        if (classLocation == null) {
+            System.err.println("Class not found!");
+            return;
         }
-
-        File classRoot = new File(classLocation.getPath());
-
-        System.out.println(
-                classRoot.getPath() + " " +
-                        (classRoot.isDirectory() ? "Directory" : "File")
-        );
+        File classRoot = new File(classLocation.getPath(), "itstep/learning/oop/");
+        File[] files = classRoot.listFiles();
+        if (files == null) {
+            System.err.println("Error resource traversing!");
+            return;
+        }
+        for (File file : files) {
+            String fileName = file.getName();
+            if (fileName.endsWith(".class") && file.isFile() && file.canRead()) {
+                String className = fileName.substring(0, fileName.length() - 6);
+                System.out.println(className);
+            }
+        }
     }
 
 
