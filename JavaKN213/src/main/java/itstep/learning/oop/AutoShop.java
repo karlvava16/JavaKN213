@@ -3,8 +3,10 @@ package itstep.learning.oop;
 import itstep.learning.oop.annotations.Required;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,9 +70,19 @@ public class AutoShop {
             System.err.println("Class not found!");
             return;
         }
-        File classRoot = new File(classLocation.getPath(), "itstep/learning/oop/");
-        File[] files = classRoot.listFiles();
-        if (files == null) {
+        File classRoot = null;
+        File[] files;
+
+
+        try {
+            classRoot = new File(
+                    URLDecoder.decode(classLocation.getPath(), "UTF-8"),
+                    "itstep/learning/oop/"
+            );
+        }
+        catch (Exception ignored) {}
+
+        if (classRoot == null || (files = classRoot.listFiles()) == null) {
             System.err.println("Error resource traversing!");
             return;
         }
