@@ -106,6 +106,7 @@ public class AutoShop {
         return classes;
     }
 
+
     private void findClasses(File directory, String packageName, List<String> classNames) {
         if (!directory.exists()) {
             return;
