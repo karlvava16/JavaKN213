@@ -3,10 +3,7 @@ package itstep.learning.oop;
 import itstep.learning.oop.annotations.Product;
 import itstep.learning.oop.annotations.Required;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -57,10 +54,8 @@ public class AutoShop {
                         this.getClass().getClassLoader().getResourceAsStream("shop.json")
                 ))
         {
-            int ch;
-            while( (ch = stream.read()) != -1) {
-            System.out.print((char)ch);
-        }
+            System.out.println(readAsString(stream));
+
             System.out.println();
 
         }
@@ -76,6 +71,19 @@ public class AutoShop {
            System.out.println("Class: " + cls.getName());
            printRequired(cls);
        }
+    }
+
+    private String readAsString ( InputStream stream ) throws IOException
+    {
+        byte[] buffer = new byte[4];
+        ByteArrayOutputStream byteBuilder =  new ByteArrayOutputStream();
+        int length;
+        while((length = stream.read(buffer)) != -1)
+        {
+            byteBuilder.write(buffer, 0, length);
+            System.out.print(new String(buffer, 0, length));
+        }
+        return byteBuilder.toString();
     }
 
     // вивести всі поля Bike, помічені анотацією @Required
