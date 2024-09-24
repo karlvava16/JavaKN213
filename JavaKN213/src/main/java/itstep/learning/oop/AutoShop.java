@@ -4,12 +4,15 @@ import itstep.learning.oop.annotations.Product;
 import itstep.learning.oop.annotations.Required;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AutoShop {
     private final List<Vehicle> vehicles;
@@ -49,6 +52,26 @@ public class AutoShop {
 //        System.out.println("----------- BIKE-REQUIRED ---------------");
 //        printRequired();
 
+        try (
+                InputStream stream = Objects.requireNonNull(
+                        this.getClass().getClassLoader().getResourceAsStream("shop.json")
+                ))
+        {
+            int ch;
+            while( (ch = stream.read()) != -1) {
+            System.out.print((char)ch);
+        }
+            System.out.println();
+
+        }
+        catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        for (String name : new File("./").list())
+        {
+            System.out.println( name );
+        }
+        System.out.println("-----------------------------------------------------");
        for (Class<?> cls : getProductClasses("itstep.learning.oop")) {
            System.out.println("Class: " + cls.getName());
            printRequired(cls);
