@@ -4,7 +4,8 @@ public class AsyncDemo {
     public void run() {
         System.out.println("Async demo");
         // ThreadDemo();
-        percentDemo();
+        // percentDemo();
+
     }
 
     private void ThreadDemo()
@@ -39,6 +40,9 @@ public class AsyncDemo {
 
     private double sum;
     private final Object sumLock = new Object();
+
+
+
 
     private void percentDemo()
     {

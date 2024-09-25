@@ -16,14 +16,15 @@ public class Crossover extends Vehicle {
     }
 
     @Required
-    private double clearance;
+    private double clearance = 0;
+
+    public Crossover() {}
 
     public Crossover(String name, float clearance) {
         super(name);
         setClearance(clearance);
     }
 
-    public Crossover() {}
 
     @Override
     public String getInfo() {
