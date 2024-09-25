@@ -74,14 +74,17 @@ public class VehicleFactory {
                 Field field = vehicleClassEntry.getValue().get( fieldName );
                 field.setAccessible( true );
                 switch (field.getType().getSimpleName()){
-                    case "String":
-                        field.set(vehicle, obj.get(fieldName).getAsString());
-                        break;
                     case "int":
                         field.set(vehicle, obj.get(fieldName).getAsInt());
                         break;
                     case "double":
                         field.set(vehicle, obj.get(fieldName).getAsDouble());
+                        break;
+                    case "boolean":
+                        field.set(vehicle, obj.get(fieldName).getAsBoolean());
+                        break;
+                    default:
+                        field.set(vehicle, obj.get(fieldName).getAsString());
                 }
             }
 
