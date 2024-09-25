@@ -3,7 +3,8 @@ package itstep.learning.async;
 public class AsyncDemo {
     public void run() {
         System.out.println("Async demo");
-        ThreadDemo();
+        // ThreadDemo();
+        percentDemo();
     }
 
     private void ThreadDemo()
@@ -35,6 +36,33 @@ public class AsyncDemo {
         System.out.println("7 Hello Main");
 
     }
+
+    private void percentDemo()
+    {
+        for (int i = 1; i <= 12; i++) {
+            new Thread(new Rate(i)).start();
+        }
+    }
+
+    private static class Rate implements Runnable {
+        private final int month;
+
+        public Rate(int month) {
+            this.month = month;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Rate " + month + " started");
+            try{
+                Thread.sleep(500); // імітація запиту
+            }
+            catch (InterruptedException ex) {
+                System.err.println(ex.getMessage());
+            }
+            System.out.println("Rate " + month + " finished");
+        }
+    }
 }
 /*
 Асинхронне програмування.
@@ -54,4 +82,18 @@ public class AsyncDemo {
 - мережні технології
     = grid
     = network
+
+  Задачі, які вигідно вирішувати в асинхронному режимі, це "переставні"
+  задачі, в яких порядок врахування їх частин не грає ролі. Наприклад, задачі
+  додавання чи множення чисел.
+  Приклад:
+  Нац. банк публікує відсоткові значення інфляції кожен місяць. Необхідно
+  визначити річну інфляцію.
+  ? чи можна враховувати відсотки у довільному порядку?
+  (100 + 10%) + 20% =?= (100 + 20%) + 10%
+  (100 x 1.1) x 1.2 =?= (100 x 1.2) x 1.1
+  100 x 1.1 x 1.2 =!= 100 x 1.2 x 1.1
+  Так, можна. Зауваження - при врахуванні відсотків 5-го місяця ми не
+  гарантуємо, що це інфляція на 5-й місяць, гарантується лише загальний
+  результат після врахування всіх складових.
 */
