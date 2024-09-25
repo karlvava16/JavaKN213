@@ -5,7 +5,7 @@ public class AsyncDemo {
         System.out.println("Async demo");
         // ThreadDemo();
         // percentDemo();
-
+        valueWithAllDigit();
     }
 
     private void ThreadDemo()
@@ -41,7 +41,38 @@ public class AsyncDemo {
     private double sum;
     private final Object sumLock = new Object();
 
+    private StringBuilder digitStr;
 
+    private void valueWithAllDigit()
+    {
+        digitStr = new StringBuilder();
+        for (int i = 0; i <= 9; i++) {
+            new Thread(new Digit(Integer.toString(i))).start();
+        }
+    }
+
+    private  class Digit implements Runnable {
+        private final String digit;
+
+        public Digit(String digit) {
+            this.digit = digit;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("added " + digit + " started");
+            try{
+                Thread.sleep(500); // імітація запиту
+            }
+            catch (InterruptedException ex) {
+                System.err.println(ex.getMessage());
+                return;
+            }
+            synchronized (sumLock) {
+                digitStr.append(digit);
+                System.out.println("added " + digit + ": " + digitStr.toString() + " finished");
+            }
+        }
 
 
     private void percentDemo()
@@ -77,7 +108,7 @@ public class AsyncDemo {
             }
         }
     }
-}
+}}
 /*
 Асинхронне програмування.
 Синхронність - послідовне у часі виконання частин коду.
