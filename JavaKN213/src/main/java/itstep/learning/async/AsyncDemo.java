@@ -37,14 +37,17 @@ public class AsyncDemo {
 
     }
 
+    private double sum;
+
     private void percentDemo()
     {
+        sum = 100.0;
         for (int i = 1; i <= 12; i++) {
-            new Thread(new Rate(i)).start();
+            new Thread(new Rate(i)).run();
         }
     }
 
-    private static class Rate implements Runnable {
+    private  class Rate implements Runnable {
         private final int month;
 
         public Rate(int month) {
@@ -54,13 +57,17 @@ public class AsyncDemo {
         @Override
         public void run() {
             System.out.println("Rate " + month + " started");
+            double percent;
             try{
                 Thread.sleep(500); // імітація запиту
+                percent = 10.0;
             }
             catch (InterruptedException ex) {
                 System.err.println(ex.getMessage());
+                return;
             }
-            System.out.println("Rate " + month + " finished");
+            sum *= (1 + percent / 100.0);
+            System.out.println("Rate " + month + " finished with sum " + sum);
         }
     }
 }
