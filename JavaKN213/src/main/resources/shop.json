@@ -34,5 +34,9 @@
   {
     "name": "Mercedes Actros L",
     "cargo": 15.0
+  },
+  {
+    "name": "Error test",
+    "undefined": 15.0
   }
 ]
