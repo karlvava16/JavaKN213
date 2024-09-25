@@ -56,14 +56,30 @@ public class VehicleFactory {
             }
             // якщо збіг є, то entry.getKey() - це клас, що підходить для цього JSON
             if( isMatch ) {
+                if ( vehicleClassEntry != null ) {
+                    // раніше було вже знайдено збіг і це є друий
+                    throw new RuntimeException(
+                            String.format(
+                                    Locale.ROOT,
+                                    "Ambiguous classes: '%s' and '%s' for data '%s'" ,
+                                    vehicleClassEntry.getKey().getName(),
+                                    entry.getKey().getName(),
+                                    obj.toString()
+                            )
+                    );
+                }
                 vehicleClassEntry = entry;
-                break;
             }
         }
         // якщо жодного збігу не знайдено, повертаємо null
         if (vehicleClassEntry == null) {
-            System.err.println("No matching class found for JSON object: " + obj);
-            return null;
+            throw new RuntimeException(
+                    String.format(
+                            Locale.ROOT,
+                            "No class found for data '%s'" ,
+                            obj.toString()
+                    )
+            );
         }
 
         // а якщо знайдено, то робимо об'єкт та заповнюємо його поля
