@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class VehicleFactory {
     private Map<Class<?>, Map<String, Field>> productClasses = null;
@@ -148,18 +149,24 @@ public class VehicleFactory {
      */
     private Map<String, Field> getRequired( Class<?> cls ) {
         Map<String, Field>res = new HashMap<>();
-        for( Field field : cls.getDeclaredFields() ) {
-            if( field.isAnnotationPresent( Required.class ) ) {
-                Required annotation = field.getAnnotation( Required.class );
-                String requiredName = annotation.value();
-                // boolean isAlter = annotation.isAlternate();
-                res.put(
-                    "".equals( requiredName )
-                        ? field.getName()
-                        : requiredName ,
-                        field);
-            }
-        }
+        Class<?> superclass = cls.getSuperclass();
+        Field[] fields = superclass == null ? new Field[0]: superclass.getDeclaredFields();
+        Stream.concat(
+                Arrays.stream(cls.getDeclaredFields() ),
+                Arrays.stream(fields) )
+                        .forEach( (field) -> {
+                    if( field.isAnnotationPresent( Required.class ) ) {
+                        Required annotation = field.getAnnotation( Required.class );
+                        String requiredName = annotation.value();
+                        // boolean isAlter = annotation.isAlternate();
+                        res.put(
+                                "".equals( requiredName )
+                                        ? field.getName()
+                                        : requiredName ,
+                                field);
+
+                    }
+                });
         return res;
     }
 
