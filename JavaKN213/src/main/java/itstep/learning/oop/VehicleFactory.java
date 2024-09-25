@@ -82,9 +82,22 @@ public class VehicleFactory {
             );
         }
 
+        Vehicle vehicle;
+
+        try {
+            vehicle = (Vehicle) vehicleClassEntry.getKey().getConstructor().newInstance();
+        }
+        catch (Exception ignored) {
+            throw new RuntimeException(
+                    "Enable  to instantiate class" +
+                            vehicleClassEntry.getKey().getName() +
+                            ". Possible there is no default constructor."
+            );
+        }
+
         // а якщо знайдено, то робимо об'єкт та заповнюємо його поля
         try {
-            Vehicle vehicle = (Vehicle) vehicleClassEntry.getKey().getConstructor().newInstance();
+            vehicle = (Vehicle) vehicleClassEntry.getKey().getConstructor().newInstance();
 
             for (String fieldName : vehicleClassEntry.getValue().keySet()) {
                 Field field = vehicleClassEntry.getValue().get( fieldName );
@@ -106,7 +119,13 @@ public class VehicleFactory {
 
             return vehicle;
         }
-        catch( Exception ignored ) { return null; }
+        catch( Exception ignored ) {
+            throw new RuntimeException(
+                    "Unable to fill object class" +
+                            vehicleClassEntry.getKey().getName() +
+                            ". Type mismatch or access denied."
+            );
+        }
     }
 
     /**

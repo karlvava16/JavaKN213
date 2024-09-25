@@ -5,7 +5,7 @@ import itstep.learning.oop.annotations.Required;
 public abstract class Vehicle {
 
     @Required
-    private String name;
+    private String name = "";
 
 
 

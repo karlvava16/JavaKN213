@@ -23,6 +23,8 @@ public class Crossover extends Vehicle {
         setClearance(clearance);
     }
 
+    public Crossover() {}
+
     @Override
     public String getInfo() {
         return String.format(

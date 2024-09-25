@@ -8,19 +8,19 @@
     "type": "Road"
   },
   {
-    "name":"Renault Master",
+    "name": "Renault Master",
     "seats": 48
   },
   {
-    "name":"Mercedes-Benz Sprinter",
+    "name": "Mercedes-Benz Sprinter",
     "seats": 21
   },
   {
-    "name":"Bogdan A092",
+    "name": "Bogdan A092",
     "seats": 24
   },
   {
-    "name":"Volvo 9700",
+    "name": "Volvo 9700",
     "seats": 54
   },
   {
@@ -36,7 +36,39 @@
     "cargo": 15.0
   },
   {
-    "name": "Error test",
-    "undefined": 15.0
+    "name": "Audi Q5",
+    "clearance": 110
+  },
+  {
+    "name": "Lamborghini Urus",
+    "clearance": 90
+  },
+  {
+    "name": "Honda CR-V",
+    "clearance": 110
+  },
+  {
+    "name": "BMW X5",
+    "clearance": 120
+  },
+  {
+    "name": "Toyota Corolla",
+    "carBody": "Hatchback"
+  },
+  {
+    "name": "BMW 320",
+    "carBody": "Hearse"
+  },
+  {
+    "name": "VW Golf",
+    "carBody": "Fastback"
+  },
+  {
+    "name": "Honda Accord",
+    "carBody": "Convertible"
+  },
+  {
+    "name": "Audi RS6",
+    "carBody": "Hatchback"
   }
 ]

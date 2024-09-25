@@ -6,21 +6,26 @@ import itstep.learning.oop.annotations.Required;
 import java.util.Locale;
 
 @Product
-public class Car extends Vehicle {
+public class Car extends Vehicle implements Trailer {
     public String getCarBody() {
         return carBody;
     }
+
 
     public void setCarBody(String carBody) {
         this.carBody = carBody;
     }
 
     @Required
-    private String carBody;
+    private String carBody = "";
 
+    public Car()
+    {
+
+    }
     public Car(String name, String carBody) {
         super(name);
-        setCarBody(carBody);
+        this.setCarBody(carBody);
     }
 
     @Override
@@ -31,5 +36,11 @@ public class Car extends Vehicle {
                 super.getName(),
                 this.getCarBody()
         );
+    }
+
+
+    @Override
+    public String trailerInfo() {
+        return "Car trailer";
     }
 }
