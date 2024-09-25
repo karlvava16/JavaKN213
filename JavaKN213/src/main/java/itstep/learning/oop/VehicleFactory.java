@@ -70,12 +70,8 @@ public class VehicleFactory {
         try {
             Vehicle vehicle = (Vehicle) vehicleClassEntry.getKey().getConstructor().newInstance();
 
-            Field field = vehicleClassEntry.getKey().getSuperclass().getDeclaredField( "name" );
-            field.setAccessible( true );
-            field.set( vehicle, obj.get("name").getAsString() );
-
             for (String fieldName : vehicleClassEntry.getValue().keySet()) {
-                field = vehicleClassEntry.getValue().get( fieldName );
+                Field field = vehicleClassEntry.getValue().get( fieldName );
                 field.setAccessible( true );
                 switch (field.getType().getSimpleName()){
                     case "String":
