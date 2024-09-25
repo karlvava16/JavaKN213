@@ -1,24 +1,22 @@
 package itstep.learning.oop;
 
-import itstep.learning.oop.annotations.Required;
-
-
-public abstract class Vehicle{
-
-    @Required
+public abstract class Vehicle {
     private String name;
 
-
-    public Vehicle(String name) {
-        setName(name);
+    public Vehicle() {
     }
+
+    public Vehicle( String name ) {
+        this.setName( name );
+    }
+
+    public abstract String getInfo();
+
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName( String name ) {
         this.name = name;
     }
-
-    public abstract String getInfo();
 }

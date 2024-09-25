@@ -1,4 +1,38 @@
 [
-  {Кириличний напис},
-  {}
+  {
+    "name": "Kawasaki Ninja",
+    "type": "Sport"
+  },
+  {
+    "name": "Harley-Davidson Sportster",
+    "type": "Road"
+  },
+  {
+    "name":"Renault Master",
+    "seats": 48
+  },
+  {
+    "name":"Mercedes-Benz Sprinter",
+    "seats": 21
+  },
+  {
+    "name":"Bogdan A092",
+    "seats": 24
+  },
+  {
+    "name":"Volvo 9700",
+    "seats": 54
+  },
+  {
+    "name": "Renault C-Truck",
+    "cargo": 7.5
+  },
+  {
+    "name": "DAF XF 106 2018",
+    "cargo": 3.5
+  },
+  {
+    "name": "Mercedes Actros L",
+    "cargo": 15.0
+  }
 ]

@@ -3,29 +3,38 @@ package itstep.learning.oop;
 import itstep.learning.oop.annotations.Product;
 import itstep.learning.oop.annotations.Required;
 
-@Product
-public class Bus  extends Vehicle {
+import java.util.Locale;
 
-    @Required(value = "seats", isAlternative = true)
+@Product
+public class Bus
+        extends Vehicle
+        implements LargeSized {
+
+    @Required( value = "seats" )
     private int capacity;
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public Bus() {
     }
-
-    public Bus (String name, int capacity)
-    {
-        super(name);
-        this.setCapacity(capacity);
+    public Bus( String name, int capacity ) {
+        super( name );
+        this.setCapacity( capacity );
     }
-
 
     public int getCapacity() {
         return capacity;
     }
 
+    public void setCapacity( int capacity ) {
+        this.capacity = capacity;
+    }
+
     @Override
     public String getInfo() {
-        return String.format("Bus %s has %d capacity", this.getName(), capacity);
+        return String.format(
+                Locale.ROOT,
+                "Bus '%s', capacity: %d",
+                super.getName(),
+                this.getCapacity()
+        );
     }
 }

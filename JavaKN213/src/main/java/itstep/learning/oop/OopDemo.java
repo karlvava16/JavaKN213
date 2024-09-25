@@ -1,12 +1,12 @@
 package itstep.learning.oop;
 
 public class OopDemo {
-    public void run()
-    {
+
+    public void run() {
+        System.out.println( "OopDemo" );
         new AutoShop().run();
     }
 }
-
 /*
 ООП - парадигма - підхід, набір традицій, засобів, інструментів до програмування
 
@@ -21,28 +21,28 @@ public class OopDemo {
 
 Продаж авто
 
-Audi Q5                     | Crossover | Name
-Lamborghini Urus            | Crossover | Сlearance
-Honda CR-V                  | Crossover |
-BMW X5                      | Crossover |
+Audi Q5          | Crossover | Name
+Lamborghini Urus | Crossover | Сlearance
+Honda CR-V       | Crossover |
+BMW X5           | Crossover |
 
-Toyota Corolla              | Car | Name
-BMW 320                     | Car | CarBody
-VW Golf                     |     |
-Honda Accord                | Car |
-Audi RS6                    | Car |
+Toyota Corolla | Car | Name
+BMW 320        | Car | CarBody
+VW Golf        |     |
+Honda Accord   | Car |
+Audi RS6       | Car |
 
-Renault C-Truck             | Truck | Name
-Mercedes Actros L           | Truck | Cargo
-DAF XF 106 2018             | Truck |
+Renault C-Truck   | Truck | Name
+Mercedes Actros L | Truck | Cargo
+DAF XF 106 2018   | Truck |
 
-Renault Master              | Bus | Name
-Mercedes-Benz Sprinter      |     | Capacity
-Bogdan A092                 |     |
-Volvo 9700                  | Bus |
+Renault Master          | Bus | Name
+Mercedes-Benz Sprinter  |     | Capacity
+Bogdan A092             |     |
+Volvo 9700              | Bus |
 
-Kawasaki Ninja              | Bike | Name
-Harley-Davidson Sportster   | Bike | Type
+Kawasaki Ninja            | Bike | Name
+Harley-Davidson Sportster | Bike | Type
 
 
 AutoShop <>---> Vehicle (транспортний засіб)
@@ -89,12 +89,10 @@ Bike [ [name, getName()] type, getType(), name? ]
   це ознака інтерфейсна, оскільки ВСІ об'єкти одно класу
   автоматично мають (або не мають) цю ознаку, не може бути
   двох байків - один крупногабаритний, інший - ні
-
-  -------------------------------------------------------------
-        АНОТАЦІЇ
-Різновид інтерфейсів-маркерів, які можуть належати не \
-даних, а й їх складомвим (полям, методам, конструкторам
-та складовим - параметрам тощо). Їх пов'зяують із поня
+---------------------------------------------------------------
+           АНОТАЦІЇ
+Різновид інтерфейсів-маркерів, які можуть належати не лише типам
+даних, а й їх складовим (полям, методам, конструкторам і навіть
+їх складовим - параметрам тощо). Їх пов'язують із поняттям
 метаданих - даними, які "супроводжують" інші дані.
-
  */
