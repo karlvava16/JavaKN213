@@ -38,12 +38,13 @@ public class AsyncDemo {
     }
 
     private double sum;
+    private final Object sumLock = new Object();
 
     private void percentDemo()
     {
         sum = 100.0;
         for (int i = 1; i <= 12; i++) {
-            new Thread(new Rate(i)).run();
+            new Thread(new Rate(i)).start();
         }
     }
 
@@ -66,8 +67,10 @@ public class AsyncDemo {
                 System.err.println(ex.getMessage());
                 return;
             }
-            sum *= (1 + percent / 100.0);
-            System.out.println("Rate " + month + " finished with sum " + sum);
+            synchronized (sumLock) {
+                sum = sum * (1 + percent / 100.0);
+                System.out.println("Rate " + month + " finished with sum " + sum);
+            }
         }
     }
 }
