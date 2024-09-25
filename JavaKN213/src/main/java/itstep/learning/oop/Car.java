@@ -19,10 +19,7 @@ public class Car extends Vehicle implements Trailer {
     @Required
     private String carBody = "";
 
-    public Car()
-    {
-
-    }
+    public Car() {}
     public Car(String name, String carBody) {
         super(name);
         this.setCarBody(carBody);

@@ -1,5 +1,6 @@
 package itstep.learning;
 
+import itstep.learning.async.AsyncDemo;
 import itstep.learning.oop.OopDemo;
 
 /**
@@ -11,7 +12,8 @@ public class App
     public static void main( String[] args )
     {
         // new Basics().run();
-        new OopDemo().run();
+        //new OopDemo().run();
+        new AsyncDemo().run();
     }
 }
 /*
