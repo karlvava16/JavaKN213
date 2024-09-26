@@ -6,6 +6,7 @@ import java.util.concurrent.*;
 
 public class AsyncDemo {
     private final ExecutorService threadPool = Executors.newFixedThreadPool(4);
+    private long startTime;
 
     public void run() {
         System.out.println("Async demo: make choise");
@@ -13,6 +14,7 @@ public class AsyncDemo {
         System.out.println("2 - Percent (thread) demo");
         System.out.println("3 - valueWithAllDigit");
         System.out.println("4 - Task demo");
+        System.out.println("5 - taskPercentDemo");
         System.out.println("0 - Quit");
 
         Scanner kbScanner = new Scanner(System.in);
@@ -22,8 +24,27 @@ public class AsyncDemo {
             case 2: percentDemo(); break;
             case 3: valueWithAllDigit(); break;
             case 4: TaskDemo(); break;
+            case 5: taskPercentDemo(); break;
         }
+        startTime = System.currentTimeMillis();
+    }
 
+
+    private double sum;
+
+    private void taskPercentDemo() {
+        try{
+            sum = 100;
+            for (int i = 1; i <= 12; i++) {
+                sum *= threadPool.submit(new RateTask(i)).get();
+                System.out.println(
+                        System.currentTimeMillis() - startTime + "ms" +
+                                " Rate" + i + " sum = " + sum);
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     private void TaskDemo()
@@ -36,7 +57,10 @@ public class AsyncDemo {
         Future<?> task1 = threadPool.submit(new Rate(2));
         // - очікування виконання задачі - .get()
         try{                                                      //  Цей блок є розтлумаченням
-            task1.get();                                          //  "цукрової" конструкції
+            task1.get();
+            System.out.println(System.currentTimeMillis() - startTime + "Task1");
+
+                                                                    //  "цукрової" конструкції
         }                                                         //  await
         catch (InterruptedException | ExecutionException ex) {    //
             System.err.println( ex.getMessage() );                //
@@ -79,6 +103,23 @@ public class AsyncDemo {
         catch (InterruptedException ignored) {}
     }
 
+    private class RateTask implements Callable<Double> {
+        private final int month;
+        public RateTask(int month)
+        {        this.month = month;
+        }
+        @Override
+        public Double call()
+                throws Exception {
+            System.out.println(
+                    System.currentTimeMillis() - startTime +  " RateTask " + month + " started" );
+            double percent;
+            Thread.sleep( 500 );  // імітація запиту
+            percent = 10.0;
+            return  (1 + percent / 100.0);
+        }}
+
+
     private void ThreadDemo()
     {
         /*
@@ -109,7 +150,6 @@ public class AsyncDemo {
 
     }
 
-    private double sum;
     private final Object sumLock = new Object();
 
     private StringBuilder digitStr;
