@@ -42,7 +42,7 @@ public class AsyncDemo {
 
 
         try {
-            for (int i = 1; i <= 12; i++) {
+            for (int i = 12; i >= 1; i--) {
                 sum *= tasks[i - 1].get();
                 System.out.println(System.currentTimeMillis() - startTime + " Rate " + i + " sum = " + sum);
             }
