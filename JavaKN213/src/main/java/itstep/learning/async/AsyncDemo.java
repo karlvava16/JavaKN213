@@ -89,6 +89,27 @@ public class AsyncDemo {
         await(dbTask1);
         await(apiTask2);
 
+        try
+        {
+            CompletableFuture.supplyAsync(() -> {
+                        System.out.println(System.currentTimeMillis() - startTime + " Config start");
+
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(300);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                        return "Config load completed";
+                    }, threadPool)
+            .thenAccept((str) -> {
+                            System.out.println(System.currentTimeMillis() - startTime + " Config completed");
+                        }).get();
+        }
+        catch (Exception e)
+            { throw new RuntimeException(e);}
+
+
+
         stopExecutor();
 
     }
