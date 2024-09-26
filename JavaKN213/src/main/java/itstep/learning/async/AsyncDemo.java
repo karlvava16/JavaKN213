@@ -26,13 +26,14 @@ public class AsyncDemo {
             case 4: TaskDemo(); break;
             case 5: taskPercentDemo(); break;
         }
-        startTime = System.currentTimeMillis();
     }
 
 
     private double sum;
 
     private void taskPercentDemo() {
+        startTime = System.currentTimeMillis();
+
         try{
             sum = 100;
             for (int i = 1; i <= 12; i++) {
