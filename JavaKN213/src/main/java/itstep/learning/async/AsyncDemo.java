@@ -23,7 +23,7 @@ public class AsyncDemo {
             case 1: ThreadDemo(); break;
             case 2: percentDemo(); break;
             case 3: valueWithAllDigit(); break;
-            case 4: TaskDemo(); break;
+            case 4: taskDemo(); break;
             case 5: taskPercentDemo(); break;
         }
     }
@@ -33,92 +33,96 @@ public class AsyncDemo {
 
     private void taskPercentDemo() {
         startTime = System.currentTimeMillis();
-
-        try{
+        try {
             sum = 100;
-            for (int i = 1; i <= 12; i++) {
-                sum *= threadPool.submit(new RateTask(i)).get();
+            for( int i = 1; i <= 12; i++ ) {
+                sum *= threadPool.submit( new RateTask(i) ).get();
                 System.out.println(
-                        System.currentTimeMillis() - startTime + "ms" +
-                                " Rate" + i + " sum = " + sum);
+                        System.currentTimeMillis() - startTime +
+                                " Rate " + i + " sum = " + sum);
             }
         }
-        catch(Exception e){
-            System.out.println(e.getMessage());
+        catch( Exception ex ) {
+            System.err.println( ex.getMessage() );
         }
-    }
-
-    private void TaskDemo()
-    {
-        // Багатозадачність. Особливості:
-        // - задачі беруться на виконання спеціалізованим "виконавцем"
-        // який треба початково створити
-        // - у кінці програми виконавця необхідно зупиняти,
-        //    інакше програма не завершується
-        Future<?> task1 = threadPool.submit(new Rate(2));
-        // - очікування виконання задачі - .get()
-        try{                                                      //  Цей блок є розтлумаченням
-            task1.get();
-            System.out.println(System.currentTimeMillis() - startTime + "Task1");
-
-                                                                    //  "цукрової" конструкції
-        }                                                         //  await
-        catch (InterruptedException | ExecutionException ex) {    //
-            System.err.println( ex.getMessage() );                //
-        }
-        Future<String> task2 = threadPool.submit(
-                new Callable<String>() {
-                    public String call() throws Exception {            // метод повертває значення
-                        TimeUnit.MILLISECONDS.sleep(500);      // а також містить Exception
-                        return "Hello Callable";                       // у сигнатурі(у тілі немає потреби
-                    }                                                  // try-catch)
-                }
-        );
-
-        try{
-            String res = task2.get();
-            System.out.println(res);
-        }
-        catch (InterruptedException | ExecutionException ex) {
-            System.err.println( "Task 2 finished with exception: "+ ex.getMessage() );
-        }
-
-        // - задачі можуть прийняти на виконання інші функціональні
-        // інтерфейси, зокрема, Callable
-        threadPool.shutdown();
-        try{
-            boolean isDone = threadPool.awaitTermination(300, TimeUnit.MILLISECONDS);
-            if (!isDone)
-            {
-                List<Runnable> cancelledTasks = threadPool.shutdownNow(); // "жорстка" зупинка
-                if (!cancelledTasks.isEmpty())
-                {
-                    System.out.println("Tasks cancelled:");
-                    for (Runnable task : cancelledTasks)
-                    {
-                        System.out.println(task.toString());
-                    }
-                }
-            }
-        }
-        catch (InterruptedException ignored) {}
+        stopExecutor();
     }
 
     private class RateTask implements Callable<Double> {
         private final int month;
-        public RateTask(int month)
-        {        this.month = month;
+
+        public RateTask(int month) {
+            this.month = month;
         }
+
         @Override
-        public Double call()
-                throws Exception {
+        public Double call() throws Exception {
             System.out.println(
-                    System.currentTimeMillis() - startTime +  " RateTask " + month + " started" );
+                    System.currentTimeMillis() - startTime +
+                            " RateTask " + month + " started" );
             double percent;
             Thread.sleep( 500 );  // імітація запиту
             percent = 10.0;
             return  (1 + percent / 100.0);
-        }}
+        }
+    }
+
+    private void taskDemo() {
+        startTime = System.currentTimeMillis();
+        // Багатозадачність. Особливості:
+        // - задачі беруться на виконання спеціалізованим "виконавцем"
+        //    який треба початково створити
+        // - задачі стартують одразу після передачі до виконавця
+        // - у кінці програми виконавця необхідно зупиняти,
+        //    інакше програма не завершується
+        Future<?> task1 = threadPool.submit( new Rate(2) );
+        // - очікування виконання задачі - .get()
+        try {                                                      // Цей блок є розтлумаченням
+            task1.get();                                           // "цукрової" конструкції
+            System.out.println(                                    // await
+                    System.currentTimeMillis() - startTime +       //
+                            " Task 1 got");                        //
+        }                                                          //
+        catch( InterruptedException | ExecutionException ex ) {    //
+            System.err.println( ex.getMessage() );                 //
+        }                                                          //
+        // - задачі можуть приймати на виконання інші функціональні
+        //    інтерфейси, зокрема, Callable
+        Future<String> task2 = threadPool.submit(
+                new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {   // метод повертає значення
+                        TimeUnit.MILLISECONDS.sleep( 500 );   // а також містить Exception
+                        return "Hello Callable";              // у сигнатурі (у тілі немає потреби
+                    }                                         // try-catch)
+                });
+        try {
+            String res = task2.get();   // res = await task2
+            System.out.println( System.currentTimeMillis() - startTime + " Task 2 finished with result: " + res );
+        }
+        catch( InterruptedException | ExecutionException ex ) {
+            System.err.println( System.currentTimeMillis() - startTime + " Task 2 finished with exception: " + ex.getMessage() );
+        }
+        stopExecutor();
+    }
+
+    private void stopExecutor() {
+        threadPool.shutdown();  // припиняємо прийом нових задач
+        try {
+            boolean isDone = threadPool.awaitTermination( 300, TimeUnit.MILLISECONDS );
+            if ( !isDone ) {
+                List<Runnable> cancelledTasks = threadPool.shutdownNow();   // "жорстка" зупинка
+                if ( !cancelledTasks.isEmpty() ) {
+                    System.err.println( System.currentTimeMillis() - startTime + " Tasks cancelled:" );
+                    for ( Runnable task : cancelledTasks ) {
+                        System.err.println( task.toString() );
+                    }
+                }
+            }
+        }
+        catch( InterruptedException ignored ) { }
+    }
+
 
 
     private void ThreadDemo()
