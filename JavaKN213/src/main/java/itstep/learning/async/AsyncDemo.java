@@ -15,6 +15,7 @@ public class AsyncDemo {
         System.out.println("3 - valueWithAllDigit");
         System.out.println("4 - Task demo");
         System.out.println("5 - taskPercentDemo");
+        System.out.println("6 - taskOrderDemo");
         System.out.println("0 - Quit");
 
         Scanner kbScanner = new Scanner(System.in);
@@ -25,8 +26,84 @@ public class AsyncDemo {
             case 3: valueWithAllDigit(); break;
             case 4: taskDemo(); break;
             case 5: taskPercentDemo(); break;
+            case 6: taskOrderDemo(); break;
         }
     }
+
+    private void taskOrderDemo()
+    {
+        // щодо порядку запуск задач
+        // Нехай, маємо чотири завдання:
+        // 1. Підключення до БД
+        Callable<String> dbConnection = () ->
+        {
+            System.out.println(System.currentTimeMillis() - startTime + " DB start");
+
+            TimeUnit.MILLISECONDS.sleep(500);
+            return "Database connection established";
+        };
+
+        // 2. Підключення (запит) до API
+        Callable<String> apiRequest = () ->
+        {
+            System.out.println(System.currentTimeMillis() - startTime + " API start");
+            TimeUnit.MILLISECONDS.sleep(800);
+            return "API data received";
+        };
+
+        // 3. Зчитування файлового кешу
+        Callable<String> cashLoad = () ->
+        {
+            System.out.println(System.currentTimeMillis() - startTime + " Cash start");
+            TimeUnit.MILLISECONDS.sleep(300);
+            return "Сash load completed";
+        };
+
+        // 4. Зчитування конфігурації (з файлу)
+        Callable<String> configLoad = () ->
+        {
+            System.out.println(System.currentTimeMillis() - startTime + " Config start");
+            TimeUnit.MILLISECONDS.sleep(300);
+            return "Config load completed";
+        };
+
+        // Залежність існує ніж задачами 4 та 1 - для підключення БД має бути зчитана конфігурація
+        // У якому порядку треба запускати і очікувати задачі для досягнення мінімального часу?
+        // Інколи можна побачити щось на кшталт
+        // var config = await loadConfigAsync()
+        // var db = await connectDbAsync()
+        // var api = await requestApiAsync()
+        // var cash = await loadCashAsync()
+        // Це не оптимально! Кожна задача очікує завершення попередньої. Загальний час - сума
+
+        startTime = System.currentTimeMillis();
+
+        Future<String> apiTask2 = threadPool.submit(apiRequest);
+        Future<String> configTask4 = threadPool.submit(configLoad);
+        Future<String> cashTask3 = threadPool.submit(cashLoad);
+        await(configTask4);
+
+        Future<String> dbTask1 = threadPool.submit(dbConnection);
+
+        await(cashTask3);
+        await(dbTask1);
+        await(apiTask2);
+
+        stopExecutor();
+
+    }
+
+    private void await(Future<String> task)
+    {
+        try {
+            String result = task.get();
+            System.out.println(System.currentTimeMillis() - startTime + " "  + result);
+        }
+        catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
 
 
     private double sum;
