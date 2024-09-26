@@ -16,6 +16,8 @@ public class AsyncDemo {
         System.out.println("4 - Task demo");
         System.out.println("5 - taskPercentDemo");
         System.out.println("6 - taskOrderDemo");
+        System.out.println("7 - valueWithAllDigitTask");
+
         System.out.println("0 - Quit");
 
         Scanner kbScanner = new Scanner(System.in);
@@ -27,8 +29,48 @@ public class AsyncDemo {
             case 4: taskDemo(); break;
             case 5: taskPercentDemo(); break;
             case 6: taskOrderDemo(); break;
+            case 7: valueWithAllDigitTask(); break;
         }
     }
+
+    private void valueWithAllDigitTask() {
+        startTime = System.currentTimeMillis();
+
+        digitStr = new StringBuilder();
+        Future<String>[] tasks = new Future[10];
+        for( int i = 0; i <= 9; i++ ) {
+            tasks[i] = threadPool.submit( new DigitTask(Integer.toString(i)) );
+        }
+
+
+        try {
+            for (int i = 9; i >= 0; i--) {
+                digitStr.append(tasks[i].get());
+                System.out.println(  "added : " + i + " : " + digitStr);
+            }
+        }
+        catch( Exception ex ) {
+            System.err.println( ex.getMessage() );
+        }
+        stopExecutor();
+    }
+
+    private class DigitTask implements Callable<String> {
+        private final String str;
+
+        public DigitTask(String str) {
+            this.str = str;
+        }
+
+        @Override
+        public String call() throws Exception {
+            System.out.println(
+                    System.currentTimeMillis() - startTime +
+                            " DigitTask " + str + " started" );
+            return str;
+        }
+    }
+
 
     private void taskOrderDemo()
     {
