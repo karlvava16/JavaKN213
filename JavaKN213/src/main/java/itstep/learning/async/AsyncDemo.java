@@ -33,6 +33,29 @@ public class AsyncDemo {
 
     private void taskPercentDemo() {
         startTime = System.currentTimeMillis();
+
+        sum = 100;
+        Future<Double>[] tasks = new Future[12];
+        for( int i = 1; i <= 12; i++ ) {
+            tasks[i - 1] = threadPool.submit( new RateTask(i) );
+        }
+
+
+        try {
+            for (int i = 1; i <= 12; i++) {
+                sum *= tasks[i - 1].get();
+                System.out.println(System.currentTimeMillis() - startTime + " Rate " + i + " sum = " + sum);
+            }
+        }
+        catch( Exception ex ) {
+            System.err.println( ex.getMessage() );
+        }
+        stopExecutor();
+    }
+
+
+    private void taskPercentDemoWrong() {
+        startTime = System.currentTimeMillis();
         try {
             sum = 100;
             for( int i = 1; i <= 12; i++ ) {
