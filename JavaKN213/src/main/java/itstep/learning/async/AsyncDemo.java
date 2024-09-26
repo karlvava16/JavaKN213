@@ -1,11 +1,82 @@
 package itstep.learning.async;
 
+import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.*;
+
 public class AsyncDemo {
+    private final ExecutorService threadPool = Executors.newFixedThreadPool(4);
+
     public void run() {
-        System.out.println("Async demo");
-        // ThreadDemo();
-        // percentDemo();
-        valueWithAllDigit();
+        System.out.println("Async demo: make choise");
+        System.out.println("1 - Thread demo");
+        System.out.println("2 - Percent (thread) demo");
+        System.out.println("3 - valueWithAllDigit");
+        System.out.println("4 - Task demo");
+        System.out.println("0 - Quit");
+
+        Scanner kbScanner = new Scanner(System.in);
+        int choice = kbScanner.nextInt();
+        switch (choice) {
+            case 1: ThreadDemo(); break;
+            case 2: percentDemo(); break;
+            case 3: valueWithAllDigit(); break;
+            case 4: TaskDemo(); break;
+        }
+
+    }
+
+    private void TaskDemo()
+    {
+        // Багатозадачність. Особливості:
+        // - задачі беруться на виконання спеціалізованим "виконавцем"
+        // який треба початково створити
+        // - у кінці програми виконавця необхідно зупиняти,
+        //    інакше програма не завершується
+        Future<?> task1 = threadPool.submit(new Rate(2));
+        // - очікування виконання задачі - .get()
+        try{                                                      //  Цей блок є розтлумаченням
+            task1.get();                                          //  "цукрової" конструкції
+        }                                                         //  await
+        catch (InterruptedException | ExecutionException ex) {    //
+            System.err.println( ex.getMessage() );                //
+        }
+        Future<String> task2 = threadPool.submit(
+                new Callable<String>() {
+                    public String call() throws Exception {            // метод повертває значення
+                        TimeUnit.MILLISECONDS.sleep(500);      // а також містить Exception
+                        return "Hello Callable";                       // у сигнатурі(у тілі немає потреби
+                    }                                                  // try-catch)
+                }
+        );
+
+        try{
+            String res = task2.get();
+            System.out.println(res);
+        }
+        catch (InterruptedException | ExecutionException ex) {
+            System.err.println( "Task 2 finished with exception: "+ ex.getMessage() );
+        }
+
+        // - задачі можуть прийняти на виконання інші функціональні
+        // інтерфейси, зокрема, Callable
+        threadPool.shutdown();
+        try{
+            boolean isDone = threadPool.awaitTermination(300, TimeUnit.MILLISECONDS);
+            if (!isDone)
+            {
+                List<Runnable> cancelledTasks = threadPool.shutdownNow(); // "жорстка" зупинка
+                if (!cancelledTasks.isEmpty())
+                {
+                    System.out.println("Tasks cancelled:");
+                    for (Runnable task : cancelledTasks)
+                    {
+                        System.out.println(task.toString());
+                    }
+                }
+            }
+        }
+        catch (InterruptedException ignored) {}
     }
 
     private void ThreadDemo()
@@ -73,8 +144,7 @@ public class AsyncDemo {
                 System.out.println("added " + digit + ": " + digitStr.toString() + " finished");
             }
         }
-
-
+}
     private void percentDemo()
     {
         sum = 100.0;
@@ -108,7 +178,7 @@ public class AsyncDemo {
             }
         }
     }
-}}
+}
 /*
 Асинхронне програмування.
 Синхронність - послідовне у часі виконання частин коду.
