@@ -64,3 +64,9 @@ double[] prices = { 10.0, 20.0, 30.0, 40.0 };
 &lt;jsp:include page="WEB-INF/fragment.jsp" /&gt; &rarr;
 <jsp:include page="../fragment.jsp" />
 
+Д.3. Реалізувати виведення масиву double[] prices у вигляді HTML-таблиці
+1 10,0
+2 20,0
+...
+Створити файл "not_found.jsp", реалізувати у ньому сторінку 404
+
