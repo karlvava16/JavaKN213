@@ -55,5 +55,16 @@ double[] prices = { 10.0, 20.0, 30.0, 40.0 };
     &lt;%= str %&gt; &rarr; <%= str %>
 </p>
 
+<h2>Алгоритмічні конструкції</h2>
+
+<% for (int i = 0; i < prices. length; i++) { %>
+<i><%= prices[i] %></i>&emsp;
+<% } %>
+<pre>
+    &lt;% for (int i = 0; i < prices. length; i++) { %&gt;
+        &lt;i&lt;%= prices[i] %&gt ;< &lt;/i&lt;&amp;emsp;
+    &lt;% } %&gt;
+</pre>
+
 </body>
 </html>
