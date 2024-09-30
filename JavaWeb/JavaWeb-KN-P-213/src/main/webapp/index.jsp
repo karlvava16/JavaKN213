@@ -58,7 +58,7 @@ double[] prices = { 10.0, 20.0, 30.0, 40.0 };
 <h2>Алгоритмічні конструкції</h2>
 <pre>
     &lt;% for (int i = 0; i < prices.length; i++) { %&gt;
-        &lt; i&gt; &lt;%= prices[i] %&gt;&lt;/i&gt; &amp; emsp;
+        &lt;i&gt; &lt;%= prices[i] %&gt;&lt;/i&gt;&amp; emsp;
     &lt;% } %&gt;
 </pre>
     &rarr;
