@@ -67,7 +67,8 @@ double[] prices = { 10.0, 20.0, 30.0, 40.0 };
     <% } %>
 
 <h2>Взаємодія з файлами</h2>
-<jsp:include page="fragment.jsp" />
+&lt;jsp:include page="WEB-INF/fragment.jsp" /&gt; &rarr;
+<jsp:include page="WEB-INF/fragment.jsp" />
 
 </body>
 </html>
