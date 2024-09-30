@@ -66,5 +66,8 @@ double[] prices = { 10.0, 20.0, 30.0, 40.0 };
         <i><%= prices[i] %></i>&emsp;
     <% } %>
 
+<h2>Взаємодія з файлами</h2>
+<jsp:include page="fragment.jsp" />
+
 </body>
 </html>
