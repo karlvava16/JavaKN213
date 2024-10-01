@@ -30,10 +30,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="<%=contextPath%>/">Home</a>
+            <a class="nav-link <%= "home.jsp".equals( pageBody ) ? "active" : ""%>" aria-current="page" href="<%=contextPath%>/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="<%=contextPath%>/web-xml">WebXml</a>
+            <a class="nav-link <%= "web_xml.jsp".equals( pageBody ) ? "active" : ""%>" href="<%=contextPath%>/web-xml">WebXml</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -63,9 +63,12 @@
     <jsp:include page='<%= pageBody %>' />
 </main>
 
-<div class="spacer"></div>
+<div class="spacer">
+</div>
 
-<footer class="bg-body-tertiary px-3 py-2">Footer</footer>
+<footer class="bg-body-tertiary px-3 py-2">
+  &copy; 2024, ITSTEP KN-P-213
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
