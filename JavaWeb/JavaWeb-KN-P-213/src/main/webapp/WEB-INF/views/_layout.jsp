@@ -32,7 +32,7 @@
             <a class="nav-link active" aria-current="page" href="<%=contextPath%>/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">WebXml</a>
+            <a class="nav-link" href="<%=contextPath%>/web-xml">WebXml</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,8 +58,8 @@
   </nav>
 </header>
 
-<main>
-  <jsp:include page='<%= pageBody %>' />
+<main class="container">
+    <jsp:include page='<%= pageBody %>' />
 </main>
 
 
