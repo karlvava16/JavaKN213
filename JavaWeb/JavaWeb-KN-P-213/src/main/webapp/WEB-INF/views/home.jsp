@@ -56,7 +56,7 @@ double[] prices = { 10.0, 20.0, 30.0, 40.0 };
     &lt;% } %&gt;
 </pre>
 &rarr;
-<% for (int i = 0; i < prices. length; i++) { %>
+<% for (int i = 0; i < prices.length; i++) { %>
 <i><%= prices[i] %></i>&emsp;
 <% } %>
 
@@ -64,9 +64,23 @@ double[] prices = { 10.0, 20.0, 30.0, 40.0 };
 &lt;jsp:include page="WEB-INF/fragment.jsp" /&gt; &rarr;
 <jsp:include page="../fragment.jsp" />
 
-Д.3. Реалізувати виведення масиву double[] prices у вигляді HTML-таблиці
-1 10,0
-2 20,0
-...
-Створити файл "not_found.jsp", реалізувати у ньому сторінку 404
+<p>
+    Д.3. Реалізувати виведення масиву double[] prices у вигляді HTML-таблиці
+    1 10,0
+    2 20,0
+    ...
+    Створити файл "not_found.jsp", реалізувати у ньому сторінку 404
+</p>
+
+<h2>Алгоритмічні конструкції</h2>
+<pre>
+    &lt;% for (int i = 0; i < prices.length; i++) { %&gt;
+        &lt;i&gt; &lt;%= prices[i] %&gt;&lt;/i&gt;&amp; emsp;
+    &lt;% } %&gt;
+</pre>
+&rarr;
+<% for (int i = 0; i < prices.length; i++) { %>
+<i><%= prices[i] %></i>&emsp;
+<% } %>
+
 
