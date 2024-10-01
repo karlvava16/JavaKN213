@@ -5,6 +5,18 @@
 <web-app>
   <display-name>KN-P-213 web project</display-name>
 <!--  Реєстрація сервлетів-->
+
+  <!-- Реєстрація фільтрів -->
+  <filter>
+
+    <filter-name>charsetFilter</filter-name>
+    <filter-class>itstep.learning.filters.CharsetFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>charsetFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <servlet>
     <servlet-name>webXmlServlet</servlet-name>
     <servlet-class>itstep.learning.servlets.WebXmlServlet</servlet-class>
@@ -16,4 +28,9 @@
     <servlet-name>webXmlServlet</servlet-name>
     <url-pattern>/web-xml</url-pattern>
   </servlet-mapping>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/views/_layout.jsp</location>
+  </error-page>
 </web-app>

@@ -11,6 +11,5 @@
 <body>
     <h1>Servlet API error</h1>
 
-
 </body>
 </html>
