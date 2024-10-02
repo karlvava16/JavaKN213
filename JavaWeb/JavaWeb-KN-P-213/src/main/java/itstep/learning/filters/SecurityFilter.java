@@ -22,3 +22,12 @@ public class SecurityFilter implements Filter {
         this.filterConfig = null;
     }
 }
+
+
+/*
+Розробити файл, що відповідає порушенню безпечного доступу
+insecure.jsp
+Переводити на цей файл, якщо у запиті відсутній підпис від
+відповідного фільтру SecurityFilter ("signature") або
+його значення не відповідає очікуваному (true)
+*/
