@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8"  %>
 <h1>Java web. JSP</h1>
 <img src="img/Java_Logo.svg" alt="logo" style="height: 200px">
+<i>Контроль інжекції хешу: <%= request.getAttribute("hash") %></i>
 <p>
     JSP - Java Server Pages - технологія веб-розробки з динамічним
     формуванням HTML сторінок. Аналогічно до PHP, ранніх ASP є
