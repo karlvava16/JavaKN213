@@ -1,8 +1,10 @@
 package itstep.learning.filters;
 
+import javax.inject.Singleton;
 import javax.servlet.*;
 import java.io.IOException;
 
+@Singleton
 public class SecurityFilter implements Filter {
     private FilterConfig filterConfig;
     @Override

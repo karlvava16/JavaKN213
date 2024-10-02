@@ -1,5 +1,6 @@
 package itstep.learning.filters;
 
+import javax.inject.Singleton;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import java.io.IOException;
 Але в даному разі перевага надається web.xml, оскільки анотації не гарантують
 порядок виконання фільтрів
 */
+@Singleton
 public class CharsetFilter implements Filter {
     private FilterConfig filterConfig;
 
