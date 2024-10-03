@@ -60,7 +60,7 @@ public class AuthDao {
         }
 
         sql = "CREATE TABLE  IF NOT EXISTS `users_roles` (" +
-                "`role_id` CHAR(36)     PRIMARY KEY  DEFAULT( UUID() )," +
+                "`role_id`    CHAR(36)     PRIMARY KEY  DEFAULT( UUID() )," +
                 "`role_name`   VARCHAR(36)     NOT NULL," +
                 "`can_create` TINYINT      DEFAULT 0," +
                 "`can_read`   TINYINT      DEFAULT 1," +
@@ -93,6 +93,26 @@ public class AuthDao {
             return false;
         }
 
+        // Seed - сідування: впровадження початкових даних
+        sql = "INSERT INTO `users_roles`(" +
+                "`role_id`,   \n" +
+                "`role_name`, \n" +
+                "`can_create`,\n" +
+                "`can_read`,  \n" +
+                "`can_update`,\n" +
+                "`can_delete`,)" +
+                "VALUES ('81661d9f-815d-11ef-bb48-fcfbf6dd7098', 'Administrator',1,1,1,1)" +
+                "ON DUPLICATE KEY UPDATE" +
+                "`role_name` = `Administrator`," +
+                "can_create' = 1, 'can_read' = 1, 'can_update' = 1, can_delete' = 1";
+
+        try(Statement stmt = dbService.getConnection().createStatement())
+        {
+            stmt.executeUpdate(sql);
+        } catch (SQLException ex) {
+            logger.warning(ex.getMessage() + "--" + sql);
+            return false;
+        }
         return true;
     }
 }
