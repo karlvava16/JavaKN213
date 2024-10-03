@@ -38,6 +38,27 @@ public class AuthDao {
                 logger.warning(ex.getMessage() + "--" + sql);
                 return false;
         }
+
+
+        sql = "CREATE TABLE  IF NOT EXISTS `users_access` (" +
+                "`access_id` CHAR(36)     PRIMARY KEY  DEFAULT( UUID() )," +
+                "`user_id`   CHAR(36)     NOT NULL," +
+                "`login`     VARCHAR(32)  NOT NULL," +
+                "`salt`      CHAR(16)         NULL," +
+                "`dk`        CHAR(20)         NULL," +
+                "`role_id`   CHAR(36)     NOT NULL," +
+                "`is_active` TINYINT      DEFAULT 1" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+
+        try(Statement stmt = dbService.getConnection().createStatement())
+        {
+            stmt.executeUpdate(sql);
+        } catch (SQLException ex) {
+            logger.warning(ex.getMessage() + "--" + sql);
+            return false;
+        }
+
         return true;
     }
 }
