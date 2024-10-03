@@ -59,6 +59,40 @@ public class AuthDao {
             return false;
         }
 
+        sql = "CREATE TABLE  IF NOT EXISTS `users_roles` (" +
+                "`role_id` CHAR(36)     PRIMARY KEY  DEFAULT( UUID() )," +
+                "`role_name`   VARCHAR(36)     NOT NULL," +
+                "`can_create` TINYINT      DEFAULT 0," +
+                "`can_read`   TINYINT      DEFAULT 1," +
+                "`can_update` TINYINT      DEFAULT 0," +
+                "`can_delete` TINYINT      DEFAULT 0" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+
+        try(Statement stmt = dbService.getConnection().createStatement())
+        {
+            stmt.executeUpdate(sql);
+        } catch (SQLException ex) {
+            logger.warning(ex.getMessage() + "--" + sql);
+            return false;
+        }
+
+        sql = "CREATE TABLE  IF NOT EXISTS `tokens` (" +
+                "`token_id` CHAR(36)     PRIMARY KEY  DEFAULT( UUID() )," +
+                "`user_id`   CHAR(36)     NOT NULL," +
+                "`iat` DATETIME      DEFAULT CURRENT_TIMESTAMP," +
+                "`exp`   DATETIME     NOT NULL" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+
+        try(Statement stmt = dbService.getConnection().createStatement())
+        {
+            stmt.executeUpdate(sql);
+        } catch (SQLException ex) {
+            logger.warning(ex.getMessage() + "--" + sql);
+            return false;
+        }
+
         return true;
     }
 }
