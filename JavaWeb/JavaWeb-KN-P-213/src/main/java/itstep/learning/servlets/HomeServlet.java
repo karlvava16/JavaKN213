@@ -30,33 +30,28 @@ public class HomeServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         boolean isSigned = false;
         Object signature = req.getAttribute("signature");
-        if ( signature instanceof Boolean ) {
+        if (signature instanceof Boolean) {
             isSigned = (Boolean) signature;
         }
-        if( isSigned ) {
+
+        if (isSigned) {
             String dbMessage;
             try {
                 dbService.getConnection();
                 dbMessage = "Connection OK";
-            }
-            catch (SQLException ex) {
+            } catch (SQLException ex) {
                 dbMessage = ex.getMessage();
             }
-            req.setAttribute("hash", hashService.hash("123") + " | " + kdfService.dk("password", "salt.4") +" | "+
-                    dbMessage);
-            req.setAttribute("body", "home.jsp");   // ~ ViewData["body"] = "home.jsp";
-        }
-        else {
-            req.setAttribute("body", "not_found.jsp");
+            req.setAttribute("hash", hashService.hash("123") + " | " + kdfService.dk("password", "salt.4") + " | " + dbMessage);
+            req.setAttribute("body", "home.jsp");
+        } else {
+            req.setAttribute("body", "insecure.jsp");  // Якщо підпис неправильний - insecure.jsp
         }
 
-        // ~ return View();
-        req.getRequestDispatcher( "WEB-INF/views/_layout.jsp" ).forward(req, resp);
-
-        // resp.getWriter().println("<h1>Home</h1>");
+        req.getRequestDispatcher("WEB-INF/views/_layout.jsp").forward(req, resp);
     }
 }
 

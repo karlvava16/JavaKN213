@@ -14,10 +14,18 @@ public class SecurityFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        servletRequest.setAttribute("signature", true);
-        filterChain.doFilter(servletRequest, servletResponse);
+        // Для прикладу, підпис можна передавати у параметрі
+        String signature = servletRequest.getParameter("signature");
 
+        if (signature != null && signature.equals("true")) {
+            servletRequest.setAttribute("signature", true);
+        } else {
+            servletRequest.setAttribute("signature", false);
+        }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
+
 
     @Override
     public void destroy() {
