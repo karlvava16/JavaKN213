@@ -2,11 +2,13 @@ package itstep.learning.filters;
 
 import javax.inject.Singleton;
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 
 @Singleton
 public class SecurityFilter implements Filter {
     private FilterConfig filterConfig;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.filterConfig = filterConfig;
@@ -14,9 +16,17 @@ public class SecurityFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        servletRequest.setAttribute("signature", true);
-        filterChain.doFilter(servletRequest, servletResponse);
+        // Для прикладу, підпис можна передавати у параметрі
+        String signature = servletRequest.getParameter("signature");
 
+//        if (signature != null && signature.equals("true")) {
+//            servletRequest.setAttribute("signature", true);
+//        } else {
+//            servletRequest.setAttribute("signature", false);
+//        }
+        servletRequest.setAttribute("signature", true);
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
@@ -24,6 +34,7 @@ public class SecurityFilter implements Filter {
         this.filterConfig = null;
     }
 }
+
 
 
 /*
