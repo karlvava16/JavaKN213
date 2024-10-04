@@ -1,5 +1,9 @@
 # Java
 
+
+## HW 02.10
+![alt text](ScreenShots/02-10.png)
+
 ## HW 30.09
 ![alt text](ScreenShots/30-09.png)
 ![alt text](ScreenShots/30-09-2.png)
