@@ -15,6 +15,11 @@ function reducer( state, action ) {
             return { ...state,
                 page: action.payload,
             };
+            case 'authenticate':
+                window.localStorage.setItem("auth-user", JSON.stringify(action.payload));
+                return { ...state,
+                    page: action.payload,
+                };
     }
 }
 
@@ -46,8 +51,6 @@ function App({contextPath}) {
                                 <a className="nav-link "
                                    onClick={() => dispatch({type: "navigate", payload: "cart"})}>Кошик</a>
                             </li>
-
-
                         </ul>
                         <form className="d-flex m-0 mr-1" role="search">
                             <input className="form-control me-2" type="search" placeholder="Search"
@@ -102,7 +105,7 @@ function Home() {
 
 
 function AuthModal() {
-    const {contextPath} = React.useContext(AppContext);
+    const {contextPath, dispatch} = React.useContext(AppContext);
     const [login, setLogin] = React.useState("");
     const [password, setPassword] = React.useState("");
 
@@ -113,7 +116,20 @@ function AuthModal() {
             headers: {
                 'Authorization': 'Basic ' + btoa(login + ':' + password),
             }
-        }).then(res => res.json()).then(console.log);
+        }).then(res => res.json()).then(j =>
+        {
+            if(j.status === "Ok")
+            {
+                // j.data - дані про користувача, токен та права (роль)
+                // задача: зберегти ці дані і використовувати без повторної автентифікації
+                // куди можна зберігати? а) state/context б) sessionStorage в) localStorage
+                dispatch({type: 'authenticate', payload: j.data});
+            }
+            else
+            {
+                alert(j.data)
+            }
+        });
     })
     return <div className="modal-dialog">
         <div className="modal-content">

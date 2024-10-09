@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import itstep.learning.dal.dao.AuthDao;
+import itstep.learning.dal.dto.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +19,7 @@ import java.util.Base64;
 @Singleton
 public class AuthServlet extends HttpServlet {
     private final AuthDao authDao;
+
 
     @Inject
     public AuthServlet(AuthDao authDao) {
@@ -68,9 +70,16 @@ public class AuthServlet extends HttpServlet {
             {
                 throw new ParseException("Invalid credentials composition", 400);
             }
+
+            User user = authDao.authenticate(parts[0], parts[1]);
+            if (user == null)
+            {
+                throw new ParseException("Credentials rejected", 401);
+            }
+
             restResponce.setStatus("success");
             restResponce.setCode(200);
-            restResponce.setData(decodedCredentials);
+            restResponce.setData(user);
 
         }
         catch (ParseException ex){
