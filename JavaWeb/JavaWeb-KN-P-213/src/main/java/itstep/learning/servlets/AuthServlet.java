@@ -6,6 +6,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import itstep.learning.dal.dao.AuthDao;
 import itstep.learning.dal.dto.User;
+import itstep.learning.rest.RestMetaData;
+import itstep.learning.rest.RestResponce;
+import itstep.learning.rest.RestServlet;
+import itstep.learning.rest.RestStatus;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,11 +19,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Base64;
+import java.util.Date;
 
 @Singleton
-public class AuthServlet extends HttpServlet {
+public class AuthServlet extends RestServlet {
     private final AuthDao authDao;
-
 
     @Inject
     public AuthServlet(AuthDao authDao) {
@@ -77,58 +81,64 @@ public class AuthServlet extends HttpServlet {
                 throw new ParseException("Credentials rejected", 401);
             }
 
-            restResponce.setStatus("success");
-            restResponce.setCode(200);
-            restResponce.setData(user);
+            super.sendResponce( user );
+
 
         }
         catch (ParseException ex){
-            restResponce.setStatus("error");
-            restResponce.setCode(ex.getErrorOffset());
-            restResponce.setData(ex.getMessage());
-
+            super.sendResponce( ex.getErrorOffset(), ex. getMessage() );
         }
 
-
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        resp.setContentType("application/json");
-        resp.getWriter().print(gson.toJson(restResponce));
     }
 
-    class RestResponce {
-        private int code;
-        private String status;
-        private Object data;
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.restResponce = new itstep.learning.rest.RestResponce().setMeta(
+                new RestMetaData()
+                        .setUrl("/auth")
+                        .setMethod((req.getMethod()))
+                        . setName ( "KN-P-213 Authentication API" )
+                        . setServerTime( new Date() )
+                        .setAllowedMethods(new String[]{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
+        );
 
-        public RestResponce() {
-
-        }
-
-        public RestResponce(int code, String status, Object data) {
-            this.code = code;
-            this.status = status;
-            this.data = data;
-        }
-        public int getCode() {
-            return code;
-        }
-        public void setCode(int code) {
-            this.code = code;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-        public void setStatus(String status) {
-            this.status = status;
-        }
-        public Object getData() {
-            return data;
-        }
-        public void setData(Object data) {
-            this.data = data;
-        }
+        super.service(req, resp);
     }
+
+//    class RestResponce {
+//        private int code;
+//        private String status;
+//        private Object data;
+//
+//        public RestResponce() {
+//
+//        }
+//
+//        public RestResponce(int code, String status, Object data) {
+//            this.code = code;
+//            this.status = status;
+//            this.data = data;
+//        }
+//        public int getCode() {
+//            return code;
+//        }
+//        public void setCode(int code) {
+//            this.code = code;
+//        }
+//
+//        public String getStatus() {
+//            return status;
+//        }
+//        public void setStatus(String status) {
+//            this.status = status;
+//        }
+//        public Object getData() {
+//            return data;
+//        }
+//        public void setData(Object data) {
+//            this.data = data;
+//        }
+//    }
 }
 
 /*
