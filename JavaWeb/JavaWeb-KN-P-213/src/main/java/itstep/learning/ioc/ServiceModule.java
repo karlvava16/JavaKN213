@@ -6,6 +6,8 @@ import itstep.learning.kdf.KdfService;
 import itstep.learning.kdf.PbKdf1Service;
 import itstep.learning.services.db.DbService;
 import itstep.learning.services.db.MySqlDbService;
+import itstep.learning.services.form.FormParseService;
+import itstep.learning.services.form.MixedFormParseService;
 import itstep.learning.services.hash.HashService;
 import itstep.learning.services.hash.Md5HashService;
 
@@ -15,5 +17,7 @@ public class ServiceModule extends AbstractModule {
         bind(HashService.class).to(Md5HashService.class);
         bind(KdfService.class).to(PbKdf1Service.class);
         bind(DbService.class).to(MySqlDbService.class);
+        bind(FormParseService.class).to(MixedFormParseService.class);
+
     }
 }

@@ -10,6 +10,8 @@ import itstep.learning.rest.RestMetaData;
 import itstep.learning.rest.RestResponce;
 import itstep.learning.rest.RestServlet;
 import itstep.learning.rest.RestStatus;
+import itstep.learning.services.form.FormParseResult;
+import itstep.learning.services.form.FormParseService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,10 +26,12 @@ import java.util.Date;
 @Singleton
 public class AuthServlet extends RestServlet {
     private final AuthDao authDao;
+    private final FormParseService formParseService;
 
     @Inject
-    public AuthServlet(AuthDao authDao) {
+    public AuthServlet(AuthDao authDao, FormParseService formParseService) {
         this.authDao = authDao;
+        this.formParseService = formParseService;
     }
 
     @Override
@@ -105,51 +109,47 @@ public class AuthServlet extends RestServlet {
         super.service(req, resp);
     }
 
-//    class RestResponce {
-//        private int code;
-//        private String status;
-//        private Object data;
-//
-//        public RestResponce() {
-//
-//        }
-//
-//        public RestResponce(int code, String status, Object data) {
-//            this.code = code;
-//            this.status = status;
-//            this.data = data;
-//        }
-//        public int getCode() {
-//            return code;
-//        }
-//        public void setCode(int code) {
-//            this.code = code;
-//        }
-//
-//        public String getStatus() {
-//            return status;
-//        }
-//        public void setStatus(String status) {
-//            this.status = status;
-//        }
-//        public Object getData() {
-//            return data;
-//        }
-//        public void setData(Object data) {
-//            this.data = data;
-//        }
-//    }
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Sign Up
+        // req.getParameter("name") - параметри запиту: URL - або form-дані
+        // АЛЕ! за умови, що форма передається як х-www-form-urlencoded
+        // і не працює для multipart/form-data
+        FormParseResult formParseResult = formParseService.parse(req);
+        super.sendResponce(
+                "files: " + formParseResult.getFiles().size() +
+                ", fields: " + formParseResult.getFields().size());
+    }
+
 }
 
 /*
+application/x-www-form-urlencoded
 
-Д.3. Створити сторінку для автоматизованого тестування API
-У кодах сторінки надсилаються різні запити на /auth
-як правильні, так і такі, що містять помилки
-і виводяться відповіді на них
+HTTP/1.1 200 0K
+Content-Type: application/x-www-form-urlencoded
 
-Without 'Authorization' header: {code: 401, status: 'error', data: 'Authorization header not found'
-With non-Basic scheme: { ... }
+name=User&password=123
 
-** Відповіді, що відповідають очікуванням, позначати зеленим кольором, інші - червоним
+*/
+
+/*
+HTTP/1.1 200 0K
+Content-Type: multipart/form-data; delimiter=asdf...w
+--asdf...w
+
+Content-Disposition: form-field; name=user-name
+
+user
+--asdf...w
+Content-Disposition: form-field; name=user-avatar
+
+123
+--asdf ..w
+Content-Disposition: form-file; name=user-avatar
+
+PNGd45sf4ghsem8jz'dflhgsd4f
+Gzz;jd'
+--asdf...w--
+
 */
