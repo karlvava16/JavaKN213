@@ -147,11 +147,16 @@ function Home() {
 }
 
 function SignUp() {
+    const {contextPath, dispatch} = React.useContext(AppContext);
     const onFormSubmit = React.useCallback(e => {
         e.preventDefault();
         // You can add form validation or submit logic here
-        console.log('Form submitted');
-    }, []);
+        const formData = new FormData(e.target);
+        fetch(`${contextPath}/auth`, {
+            method: "POST",
+            body: formData
+        }).then(r => r.json()).then(console.log)
+    });
 
     return (
         <div>
