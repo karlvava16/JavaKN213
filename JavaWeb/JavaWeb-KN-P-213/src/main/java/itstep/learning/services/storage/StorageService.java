@@ -8,5 +8,5 @@ import java.io.InputStream;
 
 public interface StorageService {
     File getFile(String fileName);
-    String saveFile(FileItem fileItem, String baseName) throws IOException;
+    String saveFile(FileItem fileItem) throws IOException;
 }

@@ -6,12 +6,14 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import itstep.learning.dal.dao.AuthDao;
 import itstep.learning.dal.dto.User;
+import itstep.learning.models.SignupFormModel;
 import itstep.learning.rest.RestMetaData;
 import itstep.learning.rest.RestResponce;
 import itstep.learning.rest.RestServlet;
 import itstep.learning.rest.RestStatus;
 import itstep.learning.services.form.FormParseResult;
 import itstep.learning.services.form.FormParseService;
+import itstep.learning.services.storage.StorageService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,11 +29,13 @@ import java.util.Date;
 public class AuthServlet extends RestServlet {
     private final AuthDao authDao;
     private final FormParseService formParseService;
+    private final StorageService storageService;
 
     @Inject
-    public AuthServlet(AuthDao authDao, FormParseService formParseService) {
+    public AuthServlet(AuthDao authDao, FormParseService formParseService, StorageService storageService) {
         this.authDao = authDao;
         this.formParseService = formParseService;
+        this.storageService = storageService;
     }
 
     @Override
@@ -97,7 +101,7 @@ public class AuthServlet extends RestServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.restResponce = new itstep.learning.rest.RestResponce().setMeta(
+        super.restResponce = new RestResponce().setMeta(
                 new RestMetaData()
                         .setUrl("/auth")
                         .setMethod((req.getMethod()))
@@ -115,12 +119,32 @@ public class AuthServlet extends RestServlet {
         // req.getParameter("name") - параметри запиту: URL - або form-дані
         // АЛЕ! за умови, що форма передається як х-www-form-urlencoded
         // і не працює для multipart/form-data
-        FormParseResult formParseResult = formParseService.parse(req);
+        FormParseResult formParseResult = formParseService.parse( req );
+        String savedName;
+        try {
+            savedName = storageService.saveFile(
+                    formParseResult.getFiles().get("signup-avatar") );
+        }
+        catch( IOException ex ) {
+            savedName = ex.getMessage();
+        }
         super.sendResponce(
                 "files: " + formParseResult.getFiles().size() +
-                ", fields: " + formParseResult.getFields().size());
+                        ", fields: " + formParseResult.getFields().size() +
+                        ", name: " + savedName
+        );
+    }
+    //TODO: реалізувати
+    private SignupFormModel getSignupFormModel(HttpServletRequest req) throws Exception {
+        return null;
     }
 
+    /*
+
+Д.3. Реалізувати сервіси парсингу форм (FormParseService)
+та управління збереженням/видачею файлів (StorageService)
+у власних курсових проєктах
+*/
 }
 
 /*

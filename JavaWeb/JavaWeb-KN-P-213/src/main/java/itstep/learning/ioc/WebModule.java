@@ -1,5 +1,6 @@
 package itstep.learning.ioc;
 
+import itstep.learning.services.filename.FileNameService;
 import itstep.learning.servlets.*;
 
 import com.google.inject.servlet.ServletModule;
@@ -13,12 +14,12 @@ public class WebModule extends ServletModule {
         // та додати @Singleton до класів фільтрів
         filter("/*").through(CharsetFilter.class);
         filter("/*").through(SecurityFilter.class);
-        filter("/*").through(FileNameService.class);
 
 
         // те ж саме з сервлетами
         serve( "/"        ).with( HomeServlet.class);
         serve( "/auth"    ).with( AuthServlet.class);
+        serve( "/storage/*" ).with( StorageServlet.class );
         serve( "/web-xml" ).with( WebXmlServlet.class );
 
 

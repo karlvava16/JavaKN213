@@ -3,18 +3,13 @@ package itstep.learning.servlets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import itstep.learning.dal.dao.AuthDao;
-import itstep.learning.filters.FileNameService;
-import itstep.learning.kdf.KdfService;
-import itstep.learning.services.db.DbService;
-import itstep.learning.services.hash.HashService;
+import itstep.learning.services.filename.FileNameService;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 
 @Singleton
 public class HomeServlet extends HttpServlet {
