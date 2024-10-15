@@ -96,7 +96,9 @@ function App({contextPath}) {
                             </button>
                         </div>}
                         {state.authUser && <div>
-                            <b>{state.authUser.userName}</b>
+                            <img src={"storage/" + state.authUser.avatarUrl}
+                                 alt={state.authUser.userName}
+                            className="nav-avatar"/>
                             <button type="button" className="btn btn-outline-warning mr-1" data-bs-toggle="modal"
                                     data-bs-target="#staticBackdrop"
                                     onClick={() => dispatch({type: "logout"})}>
@@ -148,6 +150,7 @@ function Home() {
 
 function SignUp() {
     const {contextPath, dispatch} = React.useContext(AppContext);
+    const formRef = React.useRef()
     const onFormSubmit = React.useCallback(e => {
         e.preventDefault();
         // You can add form validation or submit logic here
@@ -155,13 +158,25 @@ function SignUp() {
         fetch(`${contextPath}/auth`, {
             method: "POST",
             body: formData
-        }).then(r => r.json()).then(console.log)
+        }).then(r => r.json()).then( j => {
+            if(j.status.isSuccessful)
+            {
+                alert("Ви успішно зареєстровані");
+                formRef.current.reset();
+            }
+            else
+            {
+                alert(j.data);
+            }
+        })
+
     });
 
     return (
         <div>
             <h1>Реєстрація нового користувача</h1>
-            <form encType="multipart/form-data" method="POST" onSubmit={onFormSubmit}>
+            <form encType="multipart/form-data" method="POST"
+                  onSubmit={onFormSubmit} ref={formRef}>
                 <div className="row">
                     <div className="col col-6">
                         <div className="input-group mb-3">
@@ -302,6 +317,7 @@ function AuthModal() {
     const {contextPath, dispatch} = React.useContext(AppContext);
     const [login, setLogin] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const authModalRef = React.useRef();
 
     const authClick = React.useCallback(() => {
         console.log(login, password);
@@ -317,12 +333,13 @@ function AuthModal() {
                 // задача: зберегти ці дані і використовувати без повторної автентифікації
                 // куди можна зберігати? а) state/context б) sessionStorage в) localStorage
                 dispatch({type: 'authenticate', payload: j.data});
+                authModalRef.current.hide();
             } else {
                 alert(j.data)
             }
         });
     })
-    return <div className="modal-dialog">
+    return <div className="modal-dialog" ref={authModalRef}>
         <div className="modal-content">
             <div className="modal-header">
                 <h1 className="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>

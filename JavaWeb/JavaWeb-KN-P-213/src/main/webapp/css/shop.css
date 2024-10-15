@@ -7,3 +7,10 @@
 .spacer {
     flex : 1;
 }
+
+.nav-avatar
+{
+    border-radius: 50%;
+    max-width: 40px;
+    max-height: 50px;
+}
