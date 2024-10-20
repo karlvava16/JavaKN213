@@ -9,6 +9,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -54,14 +55,14 @@ public class MixedFormParseService implements FormParseService {
             try{
                 for (FileItem fileItem : servletFileUpload.parseRequest(req)) {
                     if (fileItem.isFormField()) {
-                        formFields.put(fileItem.getFieldName(), fileItem.getString());
+                        formFields.put(fileItem.getFieldName(), fileItem.getString(charset));
                     }
                     else{
                         formFiles.put(fileItem.getFieldName(), fileItem);
                     }
                 }
             }
-            catch (FileUploadException ex)
+            catch (FileUploadException | UnsupportedEncodingException ex)
             {
                 logger.warning(ex.getMessage());
             }

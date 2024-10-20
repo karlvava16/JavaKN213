@@ -11,14 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Singleton
-public class LocalStorageSerivce implements StorageService {
+public class LocalStorageService implements StorageService {
     private final static String storagePath = "C:/storage/Java213";
     private final static int bufferSize = 4096;
 
     private final FileNameService fileNameService;
 
     @Inject
-    public LocalStorageSerivce(FileNameService fileNameService) {
+    public LocalStorageService(FileNameService fileNameService) {
         this.fileNameService = fileNameService;
     }
 

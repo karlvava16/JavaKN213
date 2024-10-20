@@ -1,30 +1,33 @@
 package itstep.learning.servlets;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import itstep.learning.dal.dao.AuthDao;
 import itstep.learning.dal.dto.User;
+import itstep.learning.dal.dto.shop.Category;
 import itstep.learning.models.SignupFormModel;
 import itstep.learning.rest.RestMetaData;
-import itstep.learning.rest.RestResponce;
+import itstep.learning.rest.RestResponse;
 import itstep.learning.rest.RestServlet;
-import itstep.learning.rest.RestStatus;
+import itstep.learning.services.db.DbService;
 import itstep.learning.services.form.FormParseResult;
 import itstep.learning.services.form.FormParseService;
 import itstep.learning.services.storage.StorageService;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Singleton
@@ -56,7 +59,7 @@ public class AuthServlet extends RestServlet {
         // Декодуємо їх за Base64
         // Розділяємо за першим символом ':'
         // запитаємо автентифікацію в DAO
-        RestResponce restResponce = new RestResponce();
+        RestResponse restResponse = new RestResponse();
         try
         {
             String authHeader = req.getHeader("Authorization");
@@ -94,19 +97,19 @@ public class AuthServlet extends RestServlet {
                 throw new ParseException("Credentials rejected", 401);
             }
 
-            super.sendResponce( user );
+            super.sendResponse( user );
 
 
         }
         catch (ParseException ex){
-            super.sendResponce( ex.getErrorOffset(), ex. getMessage() );
+            super.sendResponse( ex.getErrorOffset(), ex. getMessage() );
         }
 
     }
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.restResponce = new RestResponce().setMeta(
+        super.restResponse = new RestResponse().setMeta(
                 new RestMetaData()
                         .setUrl("/auth")
                         .setMethod((req.getMethod()))
@@ -127,19 +130,21 @@ public class AuthServlet extends RestServlet {
             model = getSignupFormModel(req);
         }
         catch( Exception ex ) {
-            super.sendResponce(400, ex.getMessage());
+            super.sendResponse(400, ex.getMessage());
             return;
         }
         User user = authDao.signUp( model );if( user == null ) {
-            super.sendResponce( 400, "Signup error" );
+            super.sendResponse( 400, "Signup error" );
         }
         else {
-            super.sendResponce( 201, user );
+            super.sendResponse( 201, user );
         }
 
 
 
     }
+
+
 
     private SignupFormModel getSignupFormModel(HttpServletRequest req) throws Exception {
         // АЛЕ! за умови, що форма передається як х-www-form-urlencoded

@@ -1,6 +1,6 @@
 package itstep.learning.rest;
 
-public class RestResponce {
+public class RestResponse {
     private RestStatus status;
     private  RestMetaData meta;
     private Object data;
@@ -9,7 +9,7 @@ public class RestResponce {
         return status;
     }
 
-    public RestResponce setStatus(RestStatus status) {
+    public RestResponse setStatus(RestStatus status) {
         this.status = status;
         return this;
     }
@@ -18,7 +18,7 @@ public class RestResponce {
         return data;
     }
 
-    public RestResponce setData(Object data) {
+    public RestResponse setData(Object data) {
         this.data = data;
         return this;
     }
@@ -27,7 +27,7 @@ public class RestResponce {
         return meta;
     }
 
-    public RestResponce setMeta(RestMetaData meta) {
+    public RestResponse setMeta(RestMetaData meta) {
         this.meta = meta;
         return this;
     }

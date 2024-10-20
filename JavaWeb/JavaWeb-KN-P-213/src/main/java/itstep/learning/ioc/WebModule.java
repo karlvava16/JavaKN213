@@ -5,6 +5,7 @@ import itstep.learning.servlets.*;
 
 import com.google.inject.servlet.ServletModule;
 import itstep.learning.filters.*;
+import itstep.learning.servlets.shop.*;
 
 public class WebModule extends ServletModule {
     @Override
@@ -22,6 +23,8 @@ public class WebModule extends ServletModule {
         serve( "/storage/*" ).with( StorageServlet.class );
         serve( "/web-xml" ).with( WebXmlServlet.class );
 
+        serve( "/shop/category" ).with( CategoryServlet.class );
+        serve( "/shop/product" ).with( ProductServlet.class );
 
 
     }
