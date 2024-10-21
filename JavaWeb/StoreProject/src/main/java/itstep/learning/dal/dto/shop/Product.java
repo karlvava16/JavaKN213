@@ -21,6 +21,7 @@ public class Product {
 
     private Category category;
     private List<String> imageUrls;
+    private List<Product> similarProducts;
 
     public Product() {
     }
@@ -128,5 +129,13 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public List<Product> getSimilarProducts() {
+        return similarProducts;
+    }
+
+    public void setSimilarProducts(List<Product> similarProducts) {
+        this.similarProducts = similarProducts;
     }
 }
