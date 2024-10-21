@@ -4,10 +4,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import itstep.learning.dal.dao.AuthDao;
 import itstep.learning.dal.dto.User;
+import itstep.learning.dal.dto.shop.Category;
 import itstep.learning.models.SignupFormModel;
 import itstep.learning.rest.RestMetaData;
 import itstep.learning.rest.RestResponse;
 import itstep.learning.rest.RestServlet;
+import itstep.learning.services.db.DbService;
 import itstep.learning.services.form.FormParseResult;
 import itstep.learning.services.form.FormParseService;
 import itstep.learning.services.storage.StorageService;
@@ -17,10 +19,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Singleton
@@ -136,6 +143,8 @@ public class AuthServlet extends RestServlet {
 
 
     }
+
+
 
     private SignupFormModel getSignupFormModel(HttpServletRequest req) throws Exception {
         // АЛЕ! за умови, що форма передається як х-www-form-urlencoded

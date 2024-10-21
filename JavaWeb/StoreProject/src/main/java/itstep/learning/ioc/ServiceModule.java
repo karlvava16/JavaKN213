@@ -1,10 +1,12 @@
 package itstep.learning.ioc;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
 import itstep.learning.kdf.KdfService;
 import itstep.learning.kdf.PbKdf1Service;
 import itstep.learning.services.db.DbService;
 import itstep.learning.services.db.MySqlDbService;
+import itstep.learning.services.db.OracleDbService;
 import itstep.learning.services.filename.FileNameService;
 import itstep.learning.services.filename.RandomLength;
 import itstep.learning.services.form.FormParseService;
@@ -23,5 +25,6 @@ public class ServiceModule extends AbstractModule {
         bind(RandomLength.class).to(FileNameService.class);
         bind(StorageService.class).to(LocalStorageService.class);
         bind(DbService.class).to(MySqlDbService.class);
+        //bind(DbService.class).annotatedWith(Names.named("Oracle")).to(OracleDbService.class);
     }
 }

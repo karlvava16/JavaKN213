@@ -12,7 +12,7 @@ import java.io.InputStream;
 
 @Singleton
 public class LocalStorageService implements StorageService {
-    private final static String storagePath = "C:/storage/StoreProject";
+    private final static String storagePath = "C:/storage/Java213";
     private final static int bufferSize = 4096;
 
     private final FileNameService fileNameService;

@@ -2,20 +2,16 @@ package itstep.learning.servlets;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import itstep.learning.dal.dao.AuthDao;
-import itstep.learning.dal.dao.ProductDao;
+import itstep.learning.dal.dao.shop.ProductDao;
 import itstep.learning.services.db.DbService;
 import itstep.learning.services.filename.FileNameService;
-import oracle.jdbc.datasource.impl.OracleDataSource;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;

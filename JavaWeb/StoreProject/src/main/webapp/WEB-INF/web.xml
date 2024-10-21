@@ -3,7 +3,7 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Store Project</display-name>
+  <display-name>KN-P-213 web project</display-name>
 
   <filter>
     <filter-name>iocFilter</filter-name>

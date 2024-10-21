@@ -2,11 +2,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>itstep.learning</groupId>
-  <artifactId>StoreProject</artifactId>
+  <artifactId>JavaWeb-KN-P-213</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>StoreProject Maven Webapp</name>
+  <name>JavaWeb-KN-P-213 Maven Webapp</name>
   <url>http://maven.apache.org</url>
+
+
 
   <dependencies>
     <!-- https://mvnrepository.com/artifact/com.google.inject/guice -->
@@ -70,6 +72,6 @@
   </dependencies>
 
   <build>
-    <finalName>StoreProject</finalName>
+    <finalName>JavaWeb-KN-P-213</finalName>
   </build>
 </project>
