@@ -3,6 +3,7 @@ package itstep.learning.servlets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import itstep.learning.dal.dao.AuthDao;
+import itstep.learning.dal.dao.shop.CartDao;
 import itstep.learning.dal.dao.shop.ProductDao;
 import itstep.learning.services.db.DbService;
 import itstep.learning.services.filename.FileNameService;
@@ -22,15 +23,18 @@ public class HomeServlet extends HttpServlet {
     private final FileNameService fileNameService;
     private final DbService dbService;
     private final ProductDao productDao;
+    private final CartDao cartDao;
+
 
 
     @Inject
-    public HomeServlet(AuthDao authDao, FileNameService fileNameService, DbService dbService, ProductDao productDao) {
+    public HomeServlet(AuthDao authDao, FileNameService fileNameService, DbService dbService, ProductDao productDao, CartDao cartDao) {
 
         this.authDao = authDao;
         this.fileNameService = fileNameService;
         this.dbService = dbService;
         this.productDao = productDao;
+        this.cartDao = cartDao;
     }
 
     @Override
@@ -45,7 +49,7 @@ public class HomeServlet extends HttpServlet {
 
             String dbMessage;
             try {
-                 dbMessage = authDao.install() && productDao.install() ? "Install OK" : "Install failed";
+                 dbMessage = authDao.install() && productDao.install() && cartDao.install() ? "Install OK" : "Install failed";
 
             }
             catch (Exception e) {
