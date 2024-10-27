@@ -62,7 +62,7 @@ public class CartDao {
     }
 
 
-    public boolean add(User user, Product product) {
+    public boolean add(User user, Product product) throws Exception {
         if (user == null || product == null) {
             return false;
         }
@@ -91,27 +91,63 @@ public class CartDao {
         if (quantity == -1) {
             sql = "INSERT INTO cart_items (cart_item_quantity, cart_item_price, cart_id, product_id) " +
                     "VALUES (1, ?, ?, ?)";
-        } else {
-            sql = "UPDATE cart_items " +
-                    "SET cart_item_quantity = cart_item_quantity + 1, cart_item_price = cart_item_price + ? " +
-                    "WHERE cart_id = ? AND product_id = ?";
+
+            try (PreparedStatement prep = dbService.getConnection().prepareStatement(sql)) {
+                prep.setDouble(1, product.getPrice());
+                prep.setString(2, cart.getId().toString());
+                prep.setString(3, product.getId().toString());
+                prep.executeUpdate();
+                return true;
+            } catch (SQLException ex) {
+                logger.warning(ex.getMessage() + "--" + sql);
+                return false;
+            }
         }
-        try (PreparedStatement prep = dbService.getConnection().prepareStatement(sql)) {
-            prep.setDouble(1, product.getPrice());
-            prep.setString(2, cart.getId().toString());
-            prep.setString(3, product.getId().toString());
-            prep.executeUpdate();
-            return true;
-        } catch (SQLException ex) {
-            logger.warning(ex.getMessage() + "--" + sql);
-            return false;
+
+        else
+        {
+            //якщо є - збільшуємо кількість
+            return update( cart.getId().toString(), product.getId().toString(), 1 );
         }
 
     }
 
-    public boolean update(String cartId, String productId, int increment) {
-        // TODO: перевірити чи increment не призведе до від'ємних значень у кількості
-        String sql = "UPDATE cart_items " +
+    public boolean update(String cartId, String productId, int increment) throws Exception {
+
+        String sql = "SELECT ci.cart_item_quantity, p.product_amount " +
+        "FROM cart_items ci JOIN products p ON ci.product_id = p.product_id " +
+        "WHERE ci.cart_id = ? AND p.product_id = ?";
+
+        int inStock = 0;
+        int inCart = 0;
+        try (PreparedStatement prep = dbService.getConnection().prepareStatement(sql)) {
+            prep.setString(1, cartId);
+            prep.setString(2, productId);
+            ResultSet rs = prep.executeQuery();
+            if (rs.next()) {
+                inCart = rs.getInt(1);
+                inStock = rs.getInt(2);
+            }
+            else {
+                throw new Exception("Product or cart not found");
+            }
+        } catch (SQLException ex) {
+            logger.warning(ex.getMessage() + "--" + sql);
+            return false;
+
+        }
+
+        if(inCart + increment < 0)
+        {
+            throw new Exception("Increment  quantity out of bounds");
+        }
+        if(inCart + increment > inStock)
+        {
+            throw new Exception("Increment  quantity out of stock");
+        }
+
+
+        sql = "UPDATE cart_items " +
                 "SET cart_item_quantity = cart_item_quantity + ?, " +
                 "cart_item_price = cart_item_price + ? " +
                 "* (SELECT product_price FROM products WHERE product_id = ?) " +
@@ -184,7 +220,8 @@ public class CartDao {
         }
         if (cart != null && withItems) {
             List<CartItem> cartItems = new ArrayList<>();
-            sql = "SELECT * FROM cart_items ci JOIN products p ON ci.product_id = p.product_id WHERE ci.cart_id = ?";
+            sql = "SELECT * FROM cart_items ci JOIN products p ON ci.product_id = p.product_id " +
+                    "WHERE ci.cart_id = ?  AND ci.cart_item_quantity > 0";
             try (PreparedStatement prep = dbService.getConnection().prepareStatement(sql)) {
                 prep.setString(1, cart.getId().toString());
                 ResultSet rs = prep.executeQuery();
@@ -200,6 +237,28 @@ public class CartDao {
         }
         return cart;
 
+    }
+
+    public void deleteCart(String cartId) {
+        String sql = "UPDATE `carts` SET cart_close_dt = CURRENT_TIMESTAMP, cart_status = -1 WHERE cart_id = ? ";
+        try( PreparedStatement prep = dbService. getConnection().prepareStatement(sql) ) {
+            prep.setString( 1, cartId );
+            prep.executeUpdate ();
+        }
+        catch( SQLException ex ) {
+            logger.warning(ex.getMessage() + " -- " + sql);
+        }
+    }
+
+    public void deleteCartItem(String cartId, String productId) {
+        String sql = "UPDATE cart_items SET cart_item_quantity = 0 WHERE cart_id = ? AND product_id = ?";
+        try( PreparedStatement prep = dbService. getConnection() . prepareStatement(sql) ) {
+            prep.setString( 1, cartId );
+            prep.setString( 2, productId );
+            prep.executeUpdate ();}
+        catch( SQLException ex ) {
+            logger.warning(ex.getMessage() + " -- " + sql);
+        }
     }
 }
 

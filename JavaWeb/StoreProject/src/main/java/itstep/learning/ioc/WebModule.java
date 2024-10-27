@@ -23,6 +23,9 @@ public class WebModule extends ServletModule {
         serve( "/storage/*" ).with( StorageServlet.class );
         serve( "/web-xml" ).with( WebXmlServlet.class );
 
+        filter("/shop/*").through(TokenAuthFilter.class);
+
+        serve("/shop/cart").with( CartServlet.class);
         serve( "/shop/category" ).with( CategoryServlet.class );
         serve( "/shop/product" ).with( ProductServlet.class );
 

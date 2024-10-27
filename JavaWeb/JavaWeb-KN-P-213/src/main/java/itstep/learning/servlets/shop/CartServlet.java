@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import itstep.learning.dal.dao.shop.CartDao;
 import itstep.learning.dal.dao.shop.ProductDao;
 import itstep.learning.dal.dto.User;
+import itstep.learning.dal.dto.shop.Cart;
 import itstep.learning.dal.dto.shop.CartItem;
 import itstep.learning.dal.dto.shop.Product;
 import itstep.learning.rest.RestMetaData;
@@ -78,21 +79,27 @@ public class CartServlet extends RestServlet {
             return;
         }
         User user = (User) req.getAttribute("auth-token-user");
-        if(user != null) {
-            if (cartDao.add(user, product))
-            {
-                super.sendResponse( 201, productId );
-                return;
-            }
-            else
-            {
-                super.sendResponse( 500, "Error adding product" );
-            }
-        }
-        else
-        {
+        if(user == null) {
             super.sendResponse(401);
+            return;
+
         }
+            try
+            {
+                if (cartDao.add(user, product))
+                {
+                    super.sendResponse( 201, productId );
+                }
+                else
+                {
+                    super.sendResponse( 500, "Error adding product" );
+                }
+            }
+            catch ( Exception ex )
+            {
+                super.sendResponse(400, ex.getMessage());
+            }
+
     }
 
     @Override
@@ -129,12 +136,55 @@ public class CartServlet extends RestServlet {
                 return;
             }
         }
-        if (cartDao.update(cartId,productId, increment))
+        try
         {
-            super.sendResponse( 202, "Update" );
+            if (cartDao.update(cartId,productId, increment))
+            {
+                super.sendResponse( 202, "Update" );
+            }
+            else {
+                super.sendResponse( 500, "Error updating product" );
+            }
         }
-        else {
-            super.sendResponse( 500, "Error updating product" );
+        catch (Exception ex)
+        {
+            super.sendResponse( 400, ex.getMessage() );
         }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) req.getAttribute("auth-token-user");
+        if (user == null) {
+            super.sendResponse(401, null);
+            return;
+        }
+        Cart cart = cartDao.getCartByUser(user);
+        if (cart == null) {
+            super.sendResponse(404, "User cart not found");
+            return;
+        }
+
+        String cartId = req.getParameter( "cart-id" );
+        if( cartId == null || cartId.isEmpty() ){
+            super.sendResponse(400, "Missing required parameter 'cart-id'" );
+            return;
+        }
+
+        if(!cart.getId().toString().equals(cartId))
+        {
+            super.sendResponse( 403, "Access forbidden to 'cart-id'" );
+            return;
+        }
+
+        String productId = req.getParameter( "product-id" );
+        if( productId == null || productId.isEmpty() ){
+            cartDao.deleteCart(cartId);
+        }
+        else
+        {
+            cartDao.deleteCartItem(cartId, productId);
+        }
+        super.sendResponse( 202, "Data to be processed" );
     }
 }
