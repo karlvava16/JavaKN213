@@ -50,6 +50,12 @@ function App({contextPath, homePath}) {
         let path = ( hash.length > 1 ) ? hash.substring(1) : "home";
         dispatch( { type: "navigate", payload: path } );
     } ) ;
+
+    const refreshCart = React.useCallback( () => {
+        request('/shop/cart').then(cart => dispatch({type: "cart", payload: cart}))
+            //.catch(console.error);
+    });
+
     const request = React.useCallback( (url, params) => new Promise( (resolve, reject) => {
         if( url.startsWith('/') ) {
             url = contextPath + url;
@@ -99,7 +105,12 @@ function App({contextPath, homePath}) {
         };
     }, [] );
 
-    return <AppContext.Provider value={{state, dispatch, contextPath, loadCategories, request}}>
+    React.useEffect(()=> {
+        refreshCart();
+
+    }, [state.authUser]);
+
+    return <AppContext.Provider value={{state, dispatch, contextPath, loadCategories, request, refreshCart}}>
         <header>
             <nav className="navbar navbar-expand-lg bg-body-tertiary">
                 <div className="container-fluid">
@@ -510,24 +521,67 @@ function AuthModal() {
 }
 
 function Cart() {
-    const {state, dispatch, request} = React.useContext(AppContext);
+    const {state, dispatch, request, refreshCart} = React.useContext(AppContext);
     React.useEffect(()=>{
-        request('/shop/cart').then(cart => dispatch({type: "cart", payload: cart}))
-            .catch(console.error);
     }, [state.authUser])
 
-    const incCartItem = React.useCallback ((item) => {
-        console.log(item);
-        request(`/shop/cart?cart-id=${item.cartId}&product-id=${item.productId}&delta=1`, {
+    const incCartItem = React.useCallback ((item, delta) => {
+        if(Number(item.quantity) + Number(delta) === 0)
+        {
+            if(!confirm("Видалити товар з кошику?"))
+            {
+                return;
+            }
+        }
+
+        request(`/shop/cart?cart-id=${item.cartId}&product-id=${item.productId}&delta=${delta}`, {
             method: 'PUT',
 
-        }).then(console.log).catch(console.error);
+        }).then(refreshCart).catch(alert);
+
     });
+
+    const delCartItem = React.useCallback(item =>{
+        if(!confirm("Скасувати весь кошик?"))
+        {
+            return;
+        }
+        request(`/shop/cart?cart-id=${item.cartId}&product-id=${item.productId}`, {
+            method: 'DELETE',
+
+        }).then(refreshCart).catch(alert);
+    })
+
+    const delCart = React.useCallback(() =>{
+        if(!confirm("Скасувати весь кошик?"))
+        {
+            return;
+        }
+        request(`/shop/cart?cart-id=${state.cart.id}`, {
+            method: 'DELETE',
+
+        }).then(refreshCart).catch(alert);
+    })
+
+    const buyCart = React.useCallback(() =>{
+        if( ! confirm(`Підтверджуєте покупку на суму ${
+            state.cart.cartItems.reduce((s, c)=>s+c.price,0.0). toFixed( 2)} грн?`) )
+        {
+            return;
+        }
+        // request(`/shop/cart?cart-id=${item.cartId}&product-id=${item.productId}`, {
+        //     method: 'DELETE',
+        //
+        // }).then(refreshCart).catch(alert);
+    })
+
+
     return <div>
         <h2>Кошик</h2>
 
 
-        {state.cart && state.cart.cartItems ? <React.Fragment>
+        {state.cart && state.cart.cartItems
+            ? <React.Fragment>
                 <div className="row cart-row">
                     <div className="col col-2">
                         <br/>
@@ -549,7 +603,9 @@ function Cart() {
                 </div>
                 {state.cart.cartItems.map(item => <div className="row cart-row" key={item.productId}>
                     <div className="col col-2">
-                        <picture>
+                        <picture onClick={() => dispatch({
+                            type: 'navigate',
+                            payload: 'product/' + (item.product.slug || item.product.id)})}>
                             <img src={"storage/" + item.product.imageUrl} alt="product"/>
                         </picture>
                     </div>
@@ -563,9 +619,9 @@ function Cart() {
                         {item.price.toFixed(2)}
                     </div>
                     <div className="col col-2">
-                        <button className="btn btn-outline-warning"><i className="bi bi-bag-dash"></i></button>
-                        <button onClick={() => incCartItem(item)} className="btn btn-outline-success"><i className="bi bi-bag-plus"></i></button>
-                        <button className="btn btn-outline-danger"><i className="bi bi-bag-x"></i></button>
+                        <button onClick={() => incCartItem(item, -1)} className="btn btn-outline-warning"><i className="bi bi-bag-dash"></i></button>
+                        <button onClick={() => incCartItem(item, 1)} className="btn btn-outline-success"><i className="bi bi-bag-plus"></i></button>
+                        <button onClick={() => delCartItem(item)} className="btn btn-outline-danger"><i className="bi bi-bag-x"></i></button>
                     </div>
                 </div>)}
                 {state.cart.cartItems.length >= 0 && <div className="row">
@@ -578,8 +634,13 @@ function Cart() {
                     <div className="col col-2">
                         {state.cart.cartItems.reduce((s, c) => s + c.price, 0.0).toFixed(2)}
                     </div>
-                </div>}
+                    <div className="col">
+                        <button onClick={() => buyCart()} className="btn btn-success" title="Придбати"><i className="bi bi-basket3"></i></button>
+                        <button onClick={() => delCart()} className="btn btn-danger" title="Скасувати"><i className="bi bi-trash3"></i></button>
 
+                    </div>
+
+                </div>}
             </React.Fragment>
             : <h3>Кошик порожній</h3>}
         <b onClick={() => dispatch({type: "navigate", payload: "home"})}>На Домашню</b>
@@ -603,9 +664,10 @@ function Home() {
 }
 
 function Category({id}) {
-    const {contextPath, dispatch, request} = React.useContext(AppContext);
+    const {state, contextPath} = React.useContext(AppContext);
     const [products, setProducts] = React.useState([]);
     React.useEffect(() => {
+        console.log(state.cart)
         fetch(`${contextPath}/shop/product?category=${id}`)
             .then(r => r.json())
             .then(j => {
@@ -617,29 +679,14 @@ function Category({id}) {
                 }
             });
     }, [id]);
-    const cartClick = React.useCallback( (e, product) => {
-        e.stopPropagation();
-        request('/shop/cart?product-id=' + product.id, {
-            method: 'POST'
-        }).then(console.log).catch(console.error);
-    });
     return <div>
         <h2>Category page: {id}</h2>
-        {products.map(p => <div key={p.id} className="product-card"
-                                onClick={() => dispatch({type: 'navigate', payload: 'product/' + (p.slug || p.id) })}>
-            <picture>
-                <img src={"storage/" + p.imageUrl} alt="product" />
-            </picture>
-            <h3>{p.name}</h3>
-            <p>{p.description}</p>
-            <h4>₴ {p.price.toFixed(2)}</h4>
-            <span className="cart-fab" onClick={(e) => cartClick(e, p)}><i className="bi bi-bag-check"></i></span>
-        </div>)}
+        {products.map(p => <ProductCard p = {p} key={p.id}/>)}
     </div>;
 }
 
 function Product({id}) {
-    const {request, dispatch} = React.useContext(AppContext);
+    const {request, dispatch, refreshCart} = React.useContext(AppContext);
     const [product, setProduct] = React.useState({});
     React.useEffect( () => {
         request('/shop/product?id=' + id)
@@ -647,7 +694,9 @@ function Product({id}) {
             .catch( console.error );
     }, [id] );
     const cartClick = React.useCallback( e => {
-        e.stopPropagation();
+        request('/shop/cart?product-id=' + product.id, {
+            method: 'POST'
+        }).then(refreshCart).catch(alert);
     });
     return <div>
         <h2>Сторінка товару</h2>
@@ -664,7 +713,9 @@ function Product({id}) {
                     <h3>{product.name}</h3>
                     <p>{product.description}</p>
                     <h4>{product.price.toFixed(2)}</h4>
-                    <button>До кошику</button>
+                    <button onClick={e => {e.stopPropagation();cartClick();}}>
+                        До кошику
+                    </button>
                     <hr/>
                     <h5>Вас також може зацікавити:</h5>
                     {product.similarProducts && product.similarProducts.map(p =>
@@ -679,9 +730,21 @@ function Product({id}) {
 }
 
 function ProductCard({p, isSmall}) {
-    const {dispatch} = React.useContext(AppContext);
-    const cartClick = React.useCallback( e => {
+
+    const {state, dispatch, request, refreshCart} = React.useContext(AppContext);
+
+
+    const cartPost = React.useCallback( (e, product) => {
         e.stopPropagation();
+        request('/shop/cart?product-id=' + product.id, {
+            method: 'POST'
+        }).then(refreshCart).catch(alert);
+    });
+    const cartPut = React.useCallback( (e, product) => {
+        e.stopPropagation();
+        request( `/shop/cart?cart-id=${state.cart.id}&product-id=${product.id}&delta=1`, {
+            method: 'PUT'
+        }).then(refreshCart).catch(alert);
     });
     return <div key={p.id} className={"product-card " + (isSmall ? "scale-75" : "") }
                 onClick={() => dispatch({type: 'navigate', payload: 'product/' + (p.slug || p.id)})}>
@@ -691,7 +754,12 @@ function ProductCard({p, isSmall}) {
         <h3>{p.name}</h3>
         <p>{p.description}</p>
         <h4>₴ {p.price.toFixed(2)}</h4>
-        <span className="cart-fab" onClick={cartClick}><i className="bi bi-bag-check"></i></span>
+        {(state.cart && state.cart.cartItems && state.cart.cartItems.some(ci => ci.productId === p.id))
+            ? <span className="cart-fab" onClick={(e) => cartPut(e, p)}>
+                    <i className="bi bi-bag-check"></i></span>
+            : <span className="cart-fab" onClick={(e) => cartPost(e, p)}>
+                    <i className="bi bi-plus-circle"></i></span>
+        }
     </div>
 }
 
