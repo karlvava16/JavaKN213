@@ -11,22 +11,27 @@ import itstep.learning.dal.dto.shop.Product;
 import itstep.learning.rest.RestMetaData;
 import itstep.learning.rest.RestResponse;
 import itstep.learning.rest.RestServlet;
+import itstep.learning.services.stream.StreamService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
+import java.util.UUID;
 
 @Singleton
 public class CartServlet extends RestServlet {
     private final CartDao cartDao;
     private final ProductDao productDao;
+    private final StreamService streamService;
 
     @Inject
-    public CartServlet(CartDao cartDao, ProductDao productDao) {
+    public CartServlet(CartDao cartDao, ProductDao productDao, StreamService streamService) {
         this.cartDao = cartDao;
         this.productDao = productDao;
+        this.streamService = streamService;
     }
 
 
@@ -40,19 +45,56 @@ public class CartServlet extends RestServlet {
                         .setServerTime(new Date())
                         .setAllowedMethods(new String[]{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
         );
-
         super.service(req, resp);
+    }
+
+    private void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) req.getAttribute("auth-token-user");
+        if(user == null) {
+            super.sendResponse(401);
+            return;
+
+        }
+        String json = streamService.readAsString( req.getInputStream() );
+        CartItem[] cartItems = super.gson.fromJson(json, CartItem[].class);
+        for(CartItem cartItem : cartItems) {
+            UUID productId = cartItem.getProductId();
+            if( productId == null  ){
+                super. sendResponse( 400, "Missing item data 'product-id'" );
+                return;
+            }
+            Product product = productDao.getByIdOrSlug( productId.toString() );
+            if( product == null ) {
+                super.sendResponse(404, "Product not found for id '" + productId + "'");
+                return;
+            }
+            if( product.getQuantity() < cartItem. getQuantity() ) {
+            // перевірка на достатню кількість / наявність товарів
+            }
+        }
+
+        super.sendResponse(200, cartItems);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getAttribute("auth-token-user");
         if (user != null) {
-            super.sendResponse(200, cartDao.getCartByUser(user, true));
+            if(req.getParameterMap().containsKey("all"))
+            {
+                super.sendResponse(200, cartDao.getCartsArrayByUser(user, false));
+                return;
+            }
+            else
+            {
+                super.sendResponse(200, cartDao.getCartByUser(user, true));
+                return;
+            }
         }
         else
         {
-            super.sendResponse(401, new CartItem[0]);
+            super.sendResponse(401, null);
+            return;
         }
     }
 
