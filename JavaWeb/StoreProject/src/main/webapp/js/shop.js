@@ -199,7 +199,7 @@ function App({contextPath, homePath}) {
 
 function Profile()
 {
-    const {state, dispatch, request} = React.useContext(AppContext);
+    const {state, dispatch, request, refreshCart} = React.useContext(AppContext);
     const [carts, setCarts] = React.useState(null)
     React.useEffect(()=>{
         if( !state.authUser ) {
@@ -207,8 +207,20 @@ function Profile()
         }
     }, [state.authUser]);
 
+    const loadCarts = React.useCallback(() => {
+        request('/shop/profile'). then(cartsArr => {
+            setCarts(cartsArr.sort((a,b) =>
+                {
+                    a = new Date(a. createDt).getTime();
+                    b = new Date(b.createDt).getTime();
+                    return a < b ? -1 : ( a > b ? 1 : 0) ;
+                }
+            ));
+        }).catch(console.error);
+    })
+
     React.useEffect( () => {
-        request('/shop/profile'). then(setCarts).catch(console.error);
+        loadCarts();
     }, [] );
 
     const repeatCart = React.useCallback( (cart) => {
@@ -230,7 +242,16 @@ function Profile()
                 'Content-Type': 'application/json'
             },
             body: JSON. stringify( cart.cartItems)
-        }). then( console.log ).catch( console.error );
+        }). then( absents => {
+            refreshCart()
+            loadCarts()
+            if( absents.length > 0)
+            {
+                alert("Не всі товари зх кошику є в наявності, зокрема: " +
+                absents.map(ci => `${ci.name} -- ${ci.quantity} шт`)
+                    .join('\n'));
+            }
+        } ).catch( console.error );
     })
 
     return <div>
